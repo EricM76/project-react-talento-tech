@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "./Home.css";
 import { ProductCard } from "../../components/ProductCard";
+import { BannerHome } from "../../components/BannerHome";
 
 export const Home = () => {
   const [products, setProducts] = useState([]);
@@ -10,7 +11,6 @@ export const Home = () => {
     fetch("/data/products.json")
       .then((response) => response.json())
       .then((data) => {
-        console.log(data);
         setProducts(data);
         setLoading(false);
       })
@@ -22,6 +22,7 @@ export const Home = () => {
 
   return (
     <>
+    <BannerHome/>
       <div className="container products-wrapper">
         <div className="row">
           <div className="col-12">

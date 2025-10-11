@@ -13,7 +13,7 @@ export const Nav = () => {
         <NavLink to="/products" end>Todos los productos</NavLink>
       </li>
       <li>
-        <NavLink to="/brands">Categorías</NavLink>
+        <NavLink to="/categories">Categorías</NavLink>
       </li>
       <li>
         <NavLink to="/sell">

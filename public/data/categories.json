@@ -1,6 +1,7 @@
 [{
         "id": "1",
         "name": "Vehiculos",
+        "icon": "https://cdn-icons-png.flaticon.com/512/3774/3774278.png",
         "sub": [
             "Accesorios para Autos",
             "Autos",
@@ -12,6 +13,7 @@
     {
         "id": "2",
         "name": "Propiedades",
+        "icon": "https://cdn-icons-png.flaticon.com/512/2163/2163350.png",
         "sub": [
             "Departamentos - Casas - VENTA",
             "Departamentos - Casas - ALQUILER",
@@ -27,6 +29,7 @@
     {
         "id": "3",
         "name": "Electrónica",
+        "icon": "https://cdn-icons-png.flaticon.com/512/3659/3659898.png",
         "sub": [
             "Audio",
             "TV",
@@ -42,6 +45,7 @@
     {
         "id": "4",
         "name": "Teléfonos - Tablets",
+        "icon": "https://img.icons8.com/color/512/smartphone-tablet.png",
         "sub": [
             "Celulares - Teléfonos",
             "Accesorios para celulares",
@@ -51,6 +55,7 @@
     {
         "id": "5",
         "name": "Hogar - Muebles - Jardín",
+        "icon": "https://img.icons8.com/color/512/potted-plant.png",
         "sub": [
             "Muebles",
             "Decoración - Jardín - Accesorios",
@@ -60,6 +65,7 @@
     {
         "id": "6",
         "name": "Deportes - Bicicletas",
+        "icon": "https://img.icons8.com/color/512/football2.png",
         "sub": [
             "Bicicletas - Ciclismo",
             "Otros Deportes",
@@ -72,6 +78,7 @@
     {
         "id": "7",
         "name": "Moda - Belleza",
+        "icon": "https://img.icons8.com/color/512/lipstick.png",
         "sub": [
             "Ropa y Calzado",
             "Relojes - Joyas - Accesorios",
@@ -81,6 +88,7 @@
     {
         "id": "8",
         "name": "Bebés y Niños",
+        "icon": "https://img.icons8.com/color/512/stroller.png",
         "sub": [
             "Ropa de Bebés y Niños",
             "Cunas - Cochecitos - Accesorios",
@@ -89,7 +97,8 @@
     },
     {
         "id": "9",
-        "name": "Hobbies - Música - Arte - Libros",
+        "name": "Hobbies - Música - Libros",
+        "icon": "https://cdn-icons-png.flaticon.com/512/2232/2232688.png",
         "sub": [
             "Libros y Revistas",
             "Arte - Antigüedades",
@@ -100,6 +109,7 @@
     {
         "id": "10",
         "name": "Animales - Mascotas",
+        "icon": "https://cdn-icons-png.flaticon.com/512/616/616408.png",
         "sub": [
             "Perros - Gatos",
             "Accesorios para Mascotas",
@@ -108,7 +118,8 @@
     },
     {
         "id": "11",
-        "name": "Herramientas, Industria y Oficina",
+        "name": "Herramientas y Oficina",
+        "icon": "https://img.icons8.com/color/512/toolbox.png",
         "sub": [
             "Herramientas",
             "Industria",
@@ -118,22 +129,10 @@
     {
         "id": "12",
         "name": "Trabajo y Empleo",
+        "icon": "https://img.icons8.com/color/512/engineer.png",
         "sub": [
             "Ofertas de Trabajo",
             "Busqueda de Trabajo - CVs"
-        ]
-    },
-    {
-        "id": "13",
-        "name": "Servicios",
-        "sub": [
-            "Clases - Cursos",
-            "Reparaciones - Técnicos",
-            "Organización de eventos",
-            "Transporte - Mudanzas",
-            "Servicio Doméstico - Limpieza",
-            "Turismo - Paquetes turísticos",
-            "Otros Servicios"
         ]
     }
 ]

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import "./ProductDetail.css";
 import { toThousand } from "../../helpers";
 import { useParams } from "react-router-dom";
+import { ProductDetailSkeleton } from "./ProductDetailSkeleton";
 
 export const ProductDetail = () => {
   const { id } = useParams();
@@ -11,22 +12,29 @@ export const ProductDetail = () => {
 
 
   useEffect(() => {
-    fetch(`/data/products.json`)
-      .then((response) => response.json())
-      .then((data) => {
+    // Simulamos un delay de 2 segundos para ver el efecto de carga
+    const fetchWithDelay = async () => {
+      try {
+        const [response] = await Promise.all([
+          fetch(`/data/products.json`),
+          new Promise(resolve => setTimeout(resolve, 2000))
+        ]);
+        const data = await response.json();
         setProduct(data.find((product) => product.id === +id));
         setLoading(false);
-      })
-      .catch((error) => {
+      } catch (error) {
         console.error("Error loading product:", error);
         setLoading(false);
-      });
+      }
+    };
+    
+    fetchWithDelay();
   }, [id]);
 
   return (
     <div className="container products-wrapper">
       {loading ? (
-        <div className="alert alert-info">Cargando....</div>
+        <ProductDetailSkeleton />
       ) : (
         <>
       <div className="row">

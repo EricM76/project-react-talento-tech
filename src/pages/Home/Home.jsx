@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "./Home.css";
-import { ProductCard } from "../../components/ProductCard";
+import { ProductCard, ProductCardSkeleton } from "../../components/ProductCard";
 import { BannerHome } from "../../components/BannerHome";
 
 export const Home = () => {
@@ -8,16 +8,23 @@ export const Home = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch("/data/products.json")
-      .then((response) => response.json())
-      .then((data) => {
+    // Simulamos un delay de 2 segundos para ver el efecto de carga
+    const fetchWithDelay = async () => {
+      try {
+        const [response] = await Promise.all([
+          fetch("/data/products.json"),
+          new Promise(resolve => setTimeout(resolve, 2000))
+        ]);
+        const data = await response.json();
         setProducts(data);
         setLoading(false);
-      })
-      .catch((error) => {
+      } catch (error) {
         console.error("Error loading products:", error);
         setLoading(false);
-      });
+      }
+    };
+    
+    fetchWithDelay();
   }, []);
 
   return (
@@ -29,7 +36,12 @@ export const Home = () => {
             <h2 className="products-title">Últimos agregados</h2>
           </div>
           {loading ? (
-            <div className="alert alert-info">Cargando....</div>
+            <>
+              <ProductCardSkeleton />
+              <ProductCardSkeleton />
+              <ProductCardSkeleton />
+              <ProductCardSkeleton />
+            </>
           ) : (
             products
               .filter((product) => product.category === "visited")
@@ -45,7 +57,12 @@ export const Home = () => {
             <h2 className="products-title">Ofertas</h2>
           </div>
           {loading ? (
-            <div className="alert alert-info">Cargando....</div>
+            <>
+              <ProductCardSkeleton />
+              <ProductCardSkeleton />
+              <ProductCardSkeleton />
+              <ProductCardSkeleton />
+            </>
           ) : (
             products
               .filter((product) => product.category === "in-sale")

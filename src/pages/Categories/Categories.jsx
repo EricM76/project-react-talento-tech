@@ -1,22 +1,29 @@
 import React, { useEffect, useState } from "react";
 import "./Categories.css";
-import { CategoryCard } from "../../components/CategoryCard";
+import { CategoryCard, CategoryCardSkeleton } from "../../components/CategoryCard";
 
 export const Categories = () => {
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch("/data/categories.json")
-      .then((response) => response.json())
-      .then((data) => {
+    // Simulamos un delay de 2 segundos para ver el efecto de carga
+    const fetchWithDelay = async () => {
+      try {
+        const [response] = await Promise.all([
+          fetch("/data/categories.json"),
+          new Promise(resolve => setTimeout(resolve, 2000))
+        ]);
+        const data = await response.json();
         setCategories(data);
         setLoading(false);
-      })
-      .catch((error) => {
+      } catch (error) {
         console.error("Error loading categories:", error);
         setLoading(false);
-      });
+      }
+    };
+    
+    fetchWithDelay();
   }, []);
 
   return (
@@ -26,7 +33,16 @@ export const Categories = () => {
           <h2 className="categories-title">Todas las categorías</h2>
         </div>
         {loading ? (
-          <div className="alert alert-info">Cargando....</div>
+          <>
+            <CategoryCardSkeleton />
+            <CategoryCardSkeleton />
+            <CategoryCardSkeleton />
+            <CategoryCardSkeleton />
+            <CategoryCardSkeleton />
+            <CategoryCardSkeleton />
+            <CategoryCardSkeleton />
+            <CategoryCardSkeleton />
+          </>
         ) : (
           categories.map((category, index) => (
             <CategoryCard

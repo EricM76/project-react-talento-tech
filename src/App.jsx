@@ -6,6 +6,7 @@ import { Footer } from './components/Footer/Footer'
 import { ProductDetail } from './pages/ProductDetail/ProductDetail'
 import { Products } from './pages/Products'
 import { Categories } from './pages/Categories'
+import { NotFound } from './pages/NotFound'
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
         <Route path='/products' element={<Products/>}/>
         <Route path='/products/:id' element={<ProductDetail/>}/>
         <Route path='/categories' element={<Categories/>}/>
+        <Route path='*' element={<NotFound/>}/>
       </Routes>
       <Footer/>
     </>

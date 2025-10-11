@@ -7,10 +7,12 @@ import { ProductDetail } from './pages/ProductDetail/ProductDetail'
 import { Products } from './pages/Products'
 import { Categories } from './pages/Categories'
 import { NotFound } from './pages/NotFound'
+import { ScrollToTop } from './components/ScrollToTop'
 
 function App() {
   return (
     <>
+      <ScrollToTop />
       <Header/>
       <Routes>
         <Route path='/' element={<Home/>}/>

@@ -1,10 +1,16 @@
-import React from 'react'
+import React, { useState } from 'react'
 import './Header.css'
 import { Nav } from '../Nav'
 import { Link } from 'react-router-dom'
 import logo from '../../assets/logo-mercado-liebre.svg'
 
 export const Header = () => {
+  const [isMenuOpen, setIsMenuOpen] = useState(false)
+
+  const toggleMenu = () => {
+    setIsMenuOpen(!isMenuOpen)
+  }
+
   return (
     <header className="main-header">
     <div className="container">
@@ -34,11 +40,11 @@ export const Header = () => {
        
       </div>
 
-      <button className="btn-toggle-navbar">
-        <i className="fas fa-bars"></i>
+      <button className="btn-toggle-navbar" onClick={toggleMenu}>
+        <i className={`fas ${isMenuOpen ? 'fa-times' : 'fa-bars'}`}></i>
       </button>
 
-      <Nav/>
+      <Nav isOpen={isMenuOpen} onClose={() => setIsMenuOpen(false)} />
     </div>
   </header>
     

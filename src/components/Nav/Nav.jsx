@@ -2,21 +2,28 @@ import React from 'react'
 import './Nav.css'
 import { Link, NavLink } from 'react-router-dom'
 
-export const Nav = () => {
+export const Nav = ({ isOpen, onClose }) => {
+  const handleLinkClick = () => {
+    // Cerrar el menú cuando se hace clic en un enlace (solo en mobile)
+    if (window.innerWidth < 768) {
+      onClose()
+    }
+  }
+
   return (
-    <nav className="main-navbar">
+    <nav className={`main-navbar ${isOpen ? 'show' : ''}`}>
     <ul className="left-navbar">
     <li>
-        <NavLink to="/">Home</NavLink>
+        <NavLink to="/" onClick={handleLinkClick}>Home</NavLink>
       </li>
       <li>
-        <NavLink to="/products" end>Todos los productos</NavLink>
+        <NavLink to="/products" end onClick={handleLinkClick}>Todos los productos</NavLink>
       </li>
       <li>
-        <NavLink to="/categories">Categorías</NavLink>
+        <NavLink to="/categories" onClick={handleLinkClick}>Categorías</NavLink>
       </li>
       <li>
-        <NavLink to="/sell">
+        <NavLink to="/sell" onClick={handleLinkClick}>
           Vender
         </NavLink>
       </li>
@@ -28,7 +35,7 @@ export const Nav = () => {
         </span>
       </li>
       <li>
-        <Link to="/users/login">
+        <Link to="/users/login" onClick={handleLinkClick}>
           Ingresá <i className="fas fa-sign-in-alt"></i>
         </Link>
       </li>

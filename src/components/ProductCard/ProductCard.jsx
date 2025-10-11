@@ -9,7 +9,7 @@ export const ProductCard = ({ product }) => {
   return (
     <div className="col-12 col-sm-6 col-lg-3">
     <section className="product-box">
-      <Link to={`/products/detail/${id}`}>
+      <Link to={`/products/${id}`}>
         <figure className="product-box_image">
           <img src={image} alt="imagen de producto" />
         </figure>

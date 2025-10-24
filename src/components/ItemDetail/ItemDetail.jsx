@@ -42,12 +42,19 @@ export const ItemDetail = ({ product }) => {
               )}
 
               <p className="product-detail-description">{product.description}</p>
-              <button
-                className="btn btn-primary mb-3"
-                style={{ width: "100%" }}
-              >
-                AGREGAR AL CARRITO
-              </button>
+              <div>
+                <button
+                  className="btn btn-primary mb-3 w-100"
+                >
+                  AGREGAR AL CARRITO
+                </button>
+                <button
+                  className="btn btn-primary mb-3 w-100"
+                >
+                  COMPRAR AHORA
+                </button>
+              </div>
+
             </article>
           </div>
         </div>

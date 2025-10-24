@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from "react";
-import "./Home.css";
-import { BannerHome } from "../../components/BannerHome";
-import { ItemListContainer } from "../../components/ItemListContainer/ItemListContainer";
+import React, { useEffect, useState } from 'react'
+import './ItemListContainer.css'
+import { ItemList } from '../ItemList/ItemList';
 
-export const Home = () => {
+export const ItemListContainer = ({title = 'Todos los productos', filter}) => {
+
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -13,7 +13,7 @@ export const Home = () => {
       try {
         const [response] = await Promise.all([
           fetch("/data/products.json"),
-          new Promise(resolve => setTimeout(resolve, 2000))
+          new Promise(resolve => setTimeout(resolve, 1000))
         ]);
         const data = await response.json();
         setProducts(data);
@@ -28,10 +28,9 @@ export const Home = () => {
   }, []);
 
   return (
-    <>
-    <BannerHome/>
-    <ItemListContainer title="Últimos agregados" filter="visited"/>
-    <ItemListContainer title="Ofertas" filter="in-sale"/>
-    </>
-  );
-};
+    <div className="container products-wrapper">
+        <h2 className="products-title">{title}</h2>  
+        <ItemList products={filter ? products.filter((product) => product.category === filter) : products} loading={loading} />
+  </div>
+  )
+}

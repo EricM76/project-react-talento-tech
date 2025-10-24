@@ -4,10 +4,10 @@ import { Header } from './components/Header'
 import { Route, Routes } from 'react-router-dom'
 import { Footer } from './components/Footer/Footer'
 import { ProductDetail } from './pages/ProductDetail/ProductDetail'
-import { Products } from './pages/Products'
 import { Categories } from './pages/Categories'
 import { NotFound } from './pages/NotFound'
 import { ScrollToTop } from './components/ScrollToTop'
+import { Products } from './pages/Products/Products'
 
 function App() {
   return (

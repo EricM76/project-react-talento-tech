@@ -1,7 +1,7 @@
 import React from 'react'
-import './ProductCard.css'
+import './Item.css'
 
-export const ProductCardSkeleton = () => {
+export const ItemSkeleton = () => {
   return (
     <div className="col-12 col-sm-6 col-lg-3">
       <section className="product-box">
@@ -20,4 +20,3 @@ export const ProductCardSkeleton = () => {
     </div>
   )
 }
-

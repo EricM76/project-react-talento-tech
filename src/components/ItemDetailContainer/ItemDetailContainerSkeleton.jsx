@@ -1,7 +1,7 @@
 import React from 'react'
-import './ProductDetail.css'
+import './ItemDetailContainer.css'
 
-export const ProductDetailSkeleton = () => {
+export const ItemDetailContainerSkeleton = () => {
   return (
     <>
       <div className="row">

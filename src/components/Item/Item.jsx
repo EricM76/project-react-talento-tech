@@ -4,6 +4,7 @@ import { toThousand } from '../../helpers'
 
 export const Item = ({ product }) => {
   const { id, name, price, discount, image } = product
+console.log(product);
 
   return (
     <section className="product-box">

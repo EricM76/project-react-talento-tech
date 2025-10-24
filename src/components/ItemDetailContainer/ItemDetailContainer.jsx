@@ -8,6 +8,7 @@ export const ItemDetailContainer = () => {
   const { id } = useParams();
 
   const [product, setProduct] = useState(null);
+  const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
 
 
@@ -17,9 +18,10 @@ export const ItemDetailContainer = () => {
       try {
         const [response] = await Promise.all([
           fetch(`/data/products.json`),
-          new Promise(resolve => setTimeout(resolve, 2000))
+          new Promise(resolve => setTimeout(resolve, 1000))
         ]);
         const data = await response.json();
+        setProducts(data);
         setProduct(data.find((product) => product.id === +id));
         setLoading(false);
       } catch (error) {
@@ -36,7 +38,7 @@ export const ItemDetailContainer = () => {
       {loading ? (
         <ItemDetailContainerSkeleton />
       ) : (
-        <ItemDetail product={product} />
+        <ItemDetail product={product} products={products} />
       )}
     </div>
   );

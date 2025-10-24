@@ -1,8 +1,10 @@
 import React from 'react'
 import './ItemDetail.css'
 import { toThousand } from '../../helpers'
+import { ItemCarousel } from '../ItemCarousel'
 
-export const ItemDetail = ({ product }) => {
+export const ItemDetail = ({ product, products }) => {
+  
   return (
     <>
       <div className="row">
@@ -59,6 +61,10 @@ export const ItemDetail = ({ product }) => {
           </div>
         </div>
       </div>
+      <ItemCarousel
+        products={products}
+        itemsPerView={4}
+      />
     </>
   )
 }

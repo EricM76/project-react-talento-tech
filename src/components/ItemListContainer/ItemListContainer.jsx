@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import './ItemListContainer.css'
 import { ItemList } from '../ItemList/ItemList';
+import { ItemSkeleton } from '../Item/ItemSkeleton';
 
 export const ItemListContainer = ({title = 'Todos los productos', filter}) => {
 
@@ -29,8 +30,21 @@ export const ItemListContainer = ({title = 'Todos los productos', filter}) => {
 
   return (
     <div className="container products-wrapper">
-        <h2 className="products-title">{title}</h2>  
-        <ItemList products={filter ? products.filter((product) => product.category === filter) : products} loading={loading} />
+        <h2 className="products-title">{title}</h2>
+        {
+          loading ? (
+            <>
+              <ItemSkeleton />
+              <ItemSkeleton />
+              <ItemSkeleton />
+              <ItemSkeleton />
+              <ItemSkeleton />
+              <ItemSkeleton />
+            </>
+          ) : (
+            <ItemList products={filter ? products.filter((product) => product.category === filter) : products} loading={loading} />
+          )
+        }
   </div>
   )
 }

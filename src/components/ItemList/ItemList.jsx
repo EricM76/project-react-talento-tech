@@ -9,18 +9,7 @@ export const ItemList = ({ products, loading }) => {
   return (
     <div className="container products-wrapper">
       <div className="row">
-        {loading ? (
-          <>
-            <ItemSkeleton />
-            <ItemSkeleton />
-            <ItemSkeleton />
-            <ItemSkeleton />
-            <ItemSkeleton />
-            <ItemSkeleton />
-            <ItemSkeleton />
-            <ItemSkeleton />
-          </>
-        ) : products.length === 0 ? (
+        {products.length === 0 ? (
           <div className="col-12">
             <div className="alert alert-warning" role="alert">
               <i className="fas fa-exclamation-triangle me-2"></i>

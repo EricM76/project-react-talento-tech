@@ -31,11 +31,11 @@ export const ItemListContainer = ({title = 'Todos los productos', filter}) => {
   return (
     <div className="container products-wrapper">
         <h2 className="products-title">{title}</h2>
+        <div className="container products-wrapper">
+        <div className="row">
         {
           loading ? (
             <>
-              <ItemSkeleton />
-              <ItemSkeleton />
               <ItemSkeleton />
               <ItemSkeleton />
               <ItemSkeleton />
@@ -45,6 +45,8 @@ export const ItemListContainer = ({title = 'Todos los productos', filter}) => {
             <ItemList products={filter ? products.filter((product) => product.category === filter) : products} loading={loading} />
           )
         }
+        </div>
+        </div>
   </div>
   )
 }

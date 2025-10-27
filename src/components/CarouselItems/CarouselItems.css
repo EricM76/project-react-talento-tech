@@ -5,11 +5,14 @@
   background: #f8f9fa;
   border-radius: 8px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  position: relative;
+  z-index: 1;
+  overflow: visible;
 }
 
 .carousel-header {
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
   margin-bottom: 1.5rem;
 }
@@ -19,11 +22,6 @@
   font-weight: 600;
   color: #333;
   margin: 0;
-}
-
-.carousel-controls {
-  display: flex;
-  gap: 0.5rem;
 }
 
 .carousel-btn {
@@ -55,15 +53,61 @@
   font-size: 0.9rem;
 }
 
+/* Contenedor con wrapper para los botones laterales */
+.carousel-container-wrapper {
+  display: flex;
+  align-items: stretch;
+  position: relative;
+  min-height: 382px; /* 350px card + 32px de padding del contenedor */
+}
+
+/* Botones laterales del carousel */
+.carousel-btn-lateral {
+  position: absolute;
+  height: 100%;
+  width: 50px;
+  background: rgba(255, 255, 255, 0);
+  border: none;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #333;
+  font-size: 1.5rem;
+  border-radius: 0;
+}
+
+/* Mostrar botones al hacer hover sobre el contenedor */
+.carousel-container-wrapper:hover .carousel-btn-lateral {
+  opacity: 0.8;
+  background: rgba(255, 255, 255, 0.8);
+}
+
+.carousel-btn-lateral:hover {
+  opacity: 1;
+  background: rgba(255, 255, 255, 0.95);
+}
+
+.carousel-btn-lateral.prev-btn {
+  left: 0;
+}
+
+.carousel-btn-lateral.next-btn {
+  right: 0;
+}
+
 .carousel-container {
   overflow: hidden;
   border-radius: 8px;
   position: relative;
-  background: white;
+  background: transparent;
   padding: 1rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   width: 100%;
   box-sizing: border-box;
+  min-height: 450px; /* Altura mínima para que los botones se vean de la misma altura */
 }
 
 .carousel-track {
@@ -198,11 +242,31 @@
 }
 
 
+/* Contenedor de navegación (botones e indicadores) */
+.carousel-navigation {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid #e0e0e0;
+  position: static;
+  z-index: 1;
+}
+
+.carousel-controls {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
 .carousel-indicators {
   display: flex;
   justify-content: center;
   gap: 0.5rem;
-  margin-top: 1rem;
+  position: static;
 }
 
 .indicator {
@@ -232,6 +296,14 @@
     width: calc(20% - 0.4rem); /* 5 cards per view */
     height: 350px;
   }
+
+  .carousel-container-wrapper {
+    min-height: 350px; /* Altura exacta de la card sin padding extra */
+  }
+
+  .carousel-container {
+    min-height: 286px; /* 350px - 32px de padding */
+  }
 }
 
 /* Large Desktop - 4 cards */
@@ -240,6 +312,14 @@
     width: calc(25% - 0.5rem); /* 4 cards per view */
     height: 350px;
   }
+
+  .carousel-container-wrapper {
+    min-height: 350px; /* Altura exacta de la card sin padding extra */
+  }
+
+  .carousel-container {
+    min-height: 286px; /* 350px - 32px de padding */
+  }
 }
 
 /* Tablet - 2 cards */
@@ -247,6 +327,14 @@
   .carousel-item-wrapper {
     width: calc(50% - 0.5rem); /* 2 cards per view */
     height: 420px;
+  }
+
+  .carousel-container-wrapper {
+    min-height: 420px; /* Altura exacta de la card sin padding extra */
+  }
+
+  .carousel-container {
+    min-height: 356px; /* 420px - 32px de padding */
   }
 }
 
@@ -264,6 +352,14 @@
     width: 85%; /* Ancho del 85% para la imagen */
     margin: 0 auto; /* Centrar la imagen */
   }
+
+  .carousel-container-wrapper {
+    min-height: 550px; /* Altura exacta de la card sin padding extra */
+  }
+
+  .carousel-container {
+    min-height: 486px; /* 550px - 32px de padding */
+  }
   
   .item-carousel {
     padding: 0; /* Sin padding en mobile */
@@ -271,17 +367,17 @@
   }
   
   .carousel-header {
-    flex-direction: column;
-    gap: 1rem;
-    align-items: flex-start;
+    justify-content: center; /* Centrar el título */
   }
   
   .carousel-header h2 {
     font-size: 1.25rem;
   }
   
-  .carousel-controls {
-    align-self: flex-end;
+  .carousel-navigation {
+    flex-direction: column;
+    gap: 1rem;
+    align-items: center;
   }
   
   .carousel-btn {

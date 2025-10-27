@@ -1,7 +1,7 @@
 import React from 'react'
 import './ItemDetail.css'
 import { toThousand } from '../../helpers'
-import { ItemCarousel } from '../ItemCarousel'
+import { CarouselItems } from '../CarouselItems'
 
 export const ItemDetail = ({ product, products }) => {
   
@@ -61,7 +61,7 @@ export const ItemDetail = ({ product, products }) => {
           </div>
         </div>
       </div>
-      <ItemCarousel
+      <CarouselItems
         products={products}
         itemsPerView={4}
       />

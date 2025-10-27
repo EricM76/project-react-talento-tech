@@ -1,0 +1,41 @@
+/* Header styles */
+
+.d-none {
+  display: none !important;
+}
+
+.d-flex {
+  display: flex !important;
+}
+
+.d-md-none {
+  display: none !important;
+}
+
+.d-md-flex {
+  display: none !important;
+}
+
+@media (min-width: 768px) {
+  .d-md-none {
+    display: none !important;
+  }
+  
+  .d-md-flex {
+    display: flex !important;
+  }
+}
+
+@media (min-width: 768px) {
+  .header-cart-btn-mobile {
+    display: none !important;
+  }
+}
+
+.justify-content-end {
+  justify-content: flex-end !important;
+}
+
+.align-items-center {
+  align-items: center !important;
+}

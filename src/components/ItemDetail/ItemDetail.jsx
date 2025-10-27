@@ -2,8 +2,10 @@ import React from 'react'
 import './ItemDetail.css'
 import { toThousand } from '../../helpers'
 import { CarouselItems } from '../CarouselItems'
+import { useCart } from '../../context/useCartContext'
 
 export const ItemDetail = ({ product, products }) => {
+  const { addToCart, isInCart } = useCart()
   
   return (
     <>
@@ -47,8 +49,10 @@ export const ItemDetail = ({ product, products }) => {
               <div>
                 <button
                   className="btn btn-primary mb-3 w-100"
+                  onClick={() => addToCart(product)}
+                  disabled={isInCart(product.id)}
                 >
-                  AGREGAR AL CARRITO
+                  {isInCart(product.id) ? 'YA ESTÁ EN EL CARRITO' : 'AGREGAR AL CARRITO'}
                 </button>
                 <button
                   className="btn btn-primary mb-3 w-100"

@@ -8,10 +8,11 @@ import { NotFound } from './pages/NotFound'
 import { ScrollToTop } from './components/ScrollToTop'
 import { Products } from './pages/Products/Products'
 import { ProductDetail } from './pages/ProductDetail/ProductDetail'
+import { CartProvider } from './context/CartProvider'
 
 function App() {
   return (
-    <>
+    <CartProvider>
       <ScrollToTop />
       <Header/>
       <Routes>
@@ -22,7 +23,7 @@ function App() {
         <Route path='*' element={<NotFound/>}/>
       </Routes>
       <Footer/>
-    </>
+    </CartProvider>
   )
 }
 

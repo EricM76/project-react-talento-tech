@@ -3,12 +3,20 @@ import './Header.css'
 import { Nav } from '../Nav'
 import { Link } from 'react-router-dom'
 import logo from '../../assets/logo-mercado-liebre.svg'
+import { Cart } from '../Cart'
+import { useCart } from '../../context/useCartContext'
 
 export const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const [isCartOpen, setIsCartOpen] = useState(false)
+  const { getTotalQuantity } = useCart()
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen)
+  }
+
+  const toggleCart = () => {
+    setIsCartOpen(!isCartOpen)
   }
 
   return (
@@ -36,7 +44,6 @@ export const Header = () => {
             </button>
           </form>
         </div>
-
        
       </div>
 
@@ -44,8 +51,15 @@ export const Header = () => {
         <i className={`fas ${isMenuOpen ? 'fa-times' : 'fa-bars'}`}></i>
       </button>
 
-      <Nav isOpen={isMenuOpen} onClose={() => setIsMenuOpen(false)} />
+      <Nav 
+        isOpen={isMenuOpen} 
+        onClose={() => setIsMenuOpen(false)}
+        onCartToggle={toggleCart}
+        cartQuantity={getTotalQuantity()}
+      />
     </div>
+
+    <Cart isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} />
   </header>
     
   )

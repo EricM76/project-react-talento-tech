@@ -2,11 +2,17 @@ import React from 'react'
 import './Nav.css'
 import { Link, NavLink } from 'react-router-dom'
 
-export const Nav = ({ isOpen, onClose }) => {
+export const Nav = ({ isOpen, onClose, onCartToggle, cartQuantity }) => {
   const handleLinkClick = () => {
     // Cerrar el menú cuando se hace clic en un enlace (solo en mobile)
     if (window.innerWidth < 768) {
       onClose()
+    }
+  }
+
+  const handleCartClick = () => {
+    if (onCartToggle) {
+      onCartToggle()
     }
   }
 
@@ -29,6 +35,14 @@ export const Nav = ({ isOpen, onClose }) => {
       </li>
     </ul>
     <ul className="right-navbar">
+      <li>
+        <span onClick={handleCartClick} className="nav-cart-link" style={{ cursor: 'pointer' }}>
+          {cartQuantity > 0 && (
+            <span className="nav-cart-badge">{cartQuantity}</span>
+          )}
+          Mi compra <i className="fas fa-shopping-cart"></i>
+        </span>
+      </li>
       <li>
         <span id="link-register">
           Registrate <i className="fas fa-address-card"></i>

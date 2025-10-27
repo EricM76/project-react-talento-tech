@@ -14,10 +14,17 @@ export const Nav = ({ isOpen, onClose, onCartToggle, cartQuantity }) => {
     if (onCartToggle) {
       onCartToggle()
     }
+    // Cerrar el menú hamburguesa al abrir el carrito
+    if (window.innerWidth < 768) {
+      onClose()
+    }
   }
 
   return (
     <nav className={`main-navbar ${isOpen ? 'show' : ''}`}>
+      <button className="navbar-close-btn" onClick={onClose}>
+        <i className="fas fa-times"></i>
+      </button>
     <ul className="left-navbar">
     <li>
         <NavLink to="/" onClick={handleLinkClick}>Home</NavLink>
@@ -40,17 +47,17 @@ export const Nav = ({ isOpen, onClose, onCartToggle, cartQuantity }) => {
           {cartQuantity > 0 && (
             <span className="nav-cart-badge">{cartQuantity}</span>
           )}
-          Mi compra <i className="fas fa-shopping-cart"></i>
+          <i className="fas fa-shopping-cart"></i>
         </span>
       </li>
       <li>
         <span id="link-register">
-          Registrate <i className="fas fa-address-card"></i>
+          <i className="fas fa-address-card"></i>
         </span>
       </li>
       <li>
         <Link to="/users/login" onClick={handleLinkClick}>
-          Ingresá <i className="fas fa-sign-in-alt"></i>
+          <i className="fas fa-sign-in-alt"></i>
         </Link>
       </li>
     </ul>

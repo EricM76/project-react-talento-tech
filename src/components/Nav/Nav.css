@@ -28,10 +28,11 @@
   top: -8px;
   right: -12px;
   background-color: rgba(255, 255, 255, 0.5);
-  color: #03264c;
-  border-radius: 50px;
+  color: #0056b3;
+  border-radius: 50%;
+  min-width: 26px;
   height: 26px;
-  padding: 0 1px;
+  padding: 0 6px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -39,6 +40,10 @@
   font-weight: bold;
   line-height: 1;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.main-navbar i {
+  font-size: 1.5rem;
 }
 
 /* Estilo para el NavLink activo */
@@ -69,12 +74,21 @@
     display: flex;
   }
 
-  .main-navbar ul {
+  .main-navbar .left-navbar {
     flex-direction: column;
     align-items: center;
     padding: 0;
     margin: 20px 0;
     width: 100%;
+  }
+
+  .main-navbar .right-navbar {
+    flex-direction: row;
+    align-items: center;
+    padding: 0;
+    margin: 20px auto;
+    justify-content: center;
+    width: auto;
   }
 
   .main-navbar li {
@@ -83,13 +97,38 @@
     text-align: center;
   }
 
-  .main-navbar a,
-  .main-navbar span {
+  .main-navbar .right-navbar li {
+    width: auto !important;
+    margin: 0 !important;
+    display: inline-block;
+    padding: 0 20px;
+  }
+
+  .main-navbar .left-navbar a,
+  .main-navbar .left-navbar span {
     display: block;
     color: #fff;
     font-size: 1.5rem;
     padding: 15px 20px;
     width: 100%;
+  }
+
+  .main-navbar .right-navbar a,
+  .main-navbar .right-navbar span {
+    display: inline-flex;
+    color: #fff;
+    font-size: 2.5rem;
+    padding: 0;
+    width: auto;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .main-navbar span.nav-cart-badge {
+    display: inline-flex;
+    width: auto !important;
+    max-width: 30px;
+    padding: 0;
   }
 
   .main-navbar a:hover {
@@ -106,26 +145,65 @@
     cursor: pointer;
   }
 
+  .navbar-close-btn {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: none;
+    border: none;
+    color: #fff;
+    font-size: 2rem;
+    cursor: pointer;
+    padding: 10px;
+    z-index: 10000;
+    transition: transform 0.3s ease;
+  }
+
+  .navbar-close-btn:hover {
+    transform: rotate(90deg);
+    color: #ffe600;
+  }
+
   .nav-cart-link {
     cursor: pointer;
+    position: relative;
+    display: inline-block;
+    background-color: transparent !important;
+  }
+
+  .nav-cart-link:hover {
+    background-color: transparent !important;
   }
 
   .nav-cart-badge {
     position: absolute;
-    top: 10px;
-    right: 5px;
-    background-color: rgba(255, 255, 255, 0.5);
-    color: #03264c;
-    border-radius: 50px;
-    height: 40px;
-    padding: 0 2px;
+    top: -5px;
+    right: -5px;
+    background-color: #ffe600;
+    color: #0056b3;
+    border-radius: 50%;
+    min-width: 24px;
+    height: 24px;
+    padding: 0 4px;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 1.3rem;
+    font-size: 0.85rem;
     font-weight: bold;
     line-height: 1;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    z-index: 1;
+  }
+
+  .main-navbar i {
+    font-size: 2.5rem;
+  }
+}
+
+/* Ocultar el botón de cierre en tablets */
+@media (min-width: 768px) {
+  .navbar-close-btn {
+    display: none;
   }
 }
 

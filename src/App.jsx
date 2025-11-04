@@ -9,7 +9,7 @@ import { ScrollToTop } from './components/ScrollToTop'
 import { Products } from './pages/Products/Products'
 import { ProductDetail } from './pages/ProductDetail/ProductDetail'
 import { CartProvider } from './context/CartProvider'
-import { ProductFormContainer } from './components/adminComponents/ProductFormContainer/PRoductFormContainer'
+import { ProductFormContainer } from './components/adminComponents/ProductFormContainer'
 
 function App() {
   return (

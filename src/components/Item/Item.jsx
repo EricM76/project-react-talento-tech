@@ -1,6 +1,6 @@
 import React from 'react'
 import './Item.css'
-import { toThousand } from '../../helpers'
+import { toThousand } from '../../utils'
 
 export const Item = ({ product }) => {
   const { id, name, price, discount, image } = product

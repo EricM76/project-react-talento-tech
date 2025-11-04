@@ -1,7 +1,7 @@
 import React from 'react';
 import './Cart.css';
 import { useCart } from '../../context/useCartContext';
-import { toThousand } from '../../helpers';
+import { toThousand } from '../../utils';
 
 export const Cart = ({ isOpen, onClose }) => {
   const {

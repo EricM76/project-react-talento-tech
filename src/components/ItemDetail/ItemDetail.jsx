@@ -1,6 +1,6 @@
 import React from 'react'
 import './ItemDetail.css'
-import { toThousand } from '../../helpers'
+import { toThousand } from '../../utils'
 import { CarouselItems } from '../CarouselItems'
 import { useCart } from '../../context/useCartContext'
 

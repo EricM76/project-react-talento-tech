@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import './ItemListContainer.css'
 import { ItemList } from '../ItemList/ItemList';
 import { ItemSkeleton } from '../Item/ItemSkeleton';
+import { getProducts } from '../../services/products';
 
 export const ItemListContainer = ({title = 'Todos los productos', filter}) => {
 
@@ -12,11 +13,14 @@ export const ItemListContainer = ({title = 'Todos los productos', filter}) => {
     // Simulamos un delay de 2 segundos para ver el efecto de carga
     const fetchWithDelay = async () => {
       try {
-        const [response] = await Promise.all([
-          fetch("/data/products.json"),
-          new Promise(resolve => setTimeout(resolve, 1000))
-        ]);
-        const data = await response.json();
+        const data = await getProducts();
+        if (data && data.length > 0) {
+          console.log('Estructura del primer producto:', data[0]);
+          if (filter) {
+            const filtered = data.filter((product) => product.section === filter);
+          }
+        }
+        
         setProducts(data);
         setLoading(false);
       } catch (error) {
@@ -26,7 +30,7 @@ export const ItemListContainer = ({title = 'Todos los productos', filter}) => {
     };
     
     fetchWithDelay();
-  }, []);
+  }, [filter]);
 
   return (
     <div className="container products-wrapper">
@@ -42,7 +46,7 @@ export const ItemListContainer = ({title = 'Todos los productos', filter}) => {
               <ItemSkeleton />
             </>
           ) : (
-            <ItemList products={filter ? products.filter((product) => product.category === filter) : products} loading={loading} />
+            <ItemList products={filter ? products.filter((product) => product?.section === filter) : products} loading={loading} />
           )
         }
         </div>

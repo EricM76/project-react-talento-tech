@@ -1,16 +1,12 @@
 import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import './CarouselItems.css'
-import { toThousand } from '../../helpers'
+import { toThousand } from '../../utils'
 
 export const CarouselItems = ({ products = [], itemsPerView = 4 }) => {
-  const [currentIndex, setCurrentIndex] = useState(0)
+    const [currentIndex, setCurrentIndex] = useState(0)
   const [responsiveItemsPerView, setResponsiveItemsPerView] = useState(itemsPerView)
-  const [isTransitioning, setIsTransitioning] = useState(true)
   const [isPaused, setIsPaused] = useState(false)
-
-  // Crear arrays duplicados para el carousel infinito
-  const duplicatedProducts = [...products, ...products, ...products]
 
   // Hook para detectar el tamaño de pantalla
   useEffect(() => {
@@ -32,9 +28,12 @@ export const CarouselItems = ({ products = [], itemsPerView = 4 }) => {
     return () => window.removeEventListener('resize', updateItemsPerView)
   }, [])
 
-  // Inicializar en la segunda copia (centro)
+  // Calcular el índice máximo basado en productos y items por vista
+  const maxIndex = Math.max(0, products.length - responsiveItemsPerView)
+
+  // Reiniciar índice cuando cambien los productos
   useEffect(() => {
-    setCurrentIndex(products.length)
+    setCurrentIndex(0)
   }, [products.length])
 
   // Auto-play: mover automáticamente cada 3 segundos
@@ -46,38 +45,28 @@ export const CarouselItems = ({ products = [], itemsPerView = 4 }) => {
     const interval = setInterval(() => {
       setCurrentIndex((prevIndex) => {
         const newIndex = prevIndex + responsiveItemsPerView
-        
-        // Si llegamos al final de la segunda copia
-        if (newIndex >= products.length * 2) {
-          // Saltar sin transición al inicio de la segunda copia
-          setTimeout(() => {
-            setIsTransitioning(false)
-            setCurrentIndex(products.length)
-            setTimeout(() => setIsTransitioning(true), 50)
-          }, 300)
+
+        // Si llegamos al final, volver al inicio
+        if (newIndex > maxIndex) {
+          return 0
         }
-        
+
         return newIndex
       })
     }, 3000) // Cambiar cada 3 segundos
 
     return () => clearInterval(interval)
-  }, [products.length, responsiveItemsPerView, isPaused])
+  }, [products.length, responsiveItemsPerView, isPaused, maxIndex])
 
   const nextSlide = () => {
     setCurrentIndex((prevIndex) => {
       const newIndex = prevIndex + responsiveItemsPerView
-      
-      // Si llegamos al final de la segunda copia
-      if (newIndex >= products.length * 2) {
-        // Saltar sin transición al inicio de la segunda copia
-        setTimeout(() => {
-          setIsTransitioning(false)
-          setCurrentIndex(products.length)
-          setTimeout(() => setIsTransitioning(true), 50)
-        }, 300)
+
+      // Si llegamos al final, quedarse en el último índice válido
+      if (newIndex > maxIndex) {
+        return maxIndex
       }
-      
+
       return newIndex
     })
   }
@@ -85,17 +74,12 @@ export const CarouselItems = ({ products = [], itemsPerView = 4 }) => {
   const prevSlide = () => {
     setCurrentIndex((prevIndex) => {
       const newIndex = prevIndex - responsiveItemsPerView
-      
-      // Si llegamos antes del inicio de la segunda copia
-      if (newIndex < products.length) {
-        // Saltar sin transición al final de la segunda copia
-        setTimeout(() => {
-          setIsTransitioning(false)
-          setCurrentIndex(products.length * 2 - responsiveItemsPerView)
-          setTimeout(() => setIsTransitioning(true), 50)
-        }, 300)
+
+      // Si llegamos antes del inicio, quedarse en 0
+      if (newIndex < 0) {
+        return 0
       }
-      
+
       return newIndex
     })
   }
@@ -119,24 +103,26 @@ export const CarouselItems = ({ products = [], itemsPerView = 4 }) => {
       </div>
       
       <div className="carousel-container-wrapper">
-        <button 
-          className="carousel-btn carousel-btn-lateral prev-btn" 
+                <button
+          className="carousel-btn carousel-btn-lateral prev-btn"
           onClick={prevSlide}
+          disabled={currentIndex === 0}
+          style={{ opacity: currentIndex === 0 ? 0.5 : 1, cursor: currentIndex === 0 ? 'not-allowed' : 'pointer' }}
         >
           <i className="fas fa-chevron-left"></i>
         </button>
         
-        <div className="carousel-container">
-          <div 
-            className="carousel-track" 
-            style={{ 
+                <div className="carousel-container">
+          <div
+            className="carousel-track"
+            style={{
               transform: `translateX(-${currentIndex * (100 / responsiveItemsPerView)}%)`,
-              transition: isTransitioning ? 'transform 0.3s ease' : 'none'
+              transition: 'transform 0.3s ease'
             }}
           >
-            {duplicatedProducts.map((product, index) => (
-              <div 
-                key={`${product.id}-${index}`} 
+            {products.map((product, index) => (
+              <div
+                key={product.id}
                 className="carousel-item-wrapper"
               >
                 <Link to={`/products/${product.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
@@ -163,26 +149,29 @@ export const CarouselItems = ({ products = [], itemsPerView = 4 }) => {
           </div>
         </div>
         
-        <button 
-          className="carousel-btn carousel-btn-lateral next-btn" 
+                <button
+          className="carousel-btn carousel-btn-lateral next-btn"
           onClick={nextSlide}
+          disabled={currentIndex >= maxIndex}
+          style={{ opacity: currentIndex >= maxIndex ? 0.5 : 1, cursor: currentIndex >= maxIndex ? 'not-allowed' : 'pointer' }}
         >
           <i className="fas fa-chevron-right"></i>
         </button>
       </div>
       
-      {products.length > responsiveItemsPerView && (
+            {products.length > responsiveItemsPerView && (
         <div className="carousel-navigation">
           <div className="carousel-indicators">
             {Array.from({ length: Math.ceil(products.length / responsiveItemsPerView) }).map((_, index) => {
-              const adjustedIndex = currentIndex >= products.length 
-                ? currentIndex - products.length 
-                : currentIndex
+              const slideIndex = index * responsiveItemsPerView
               return (
                 <button
                   key={index}
-                  className={`indicator ${index === Math.floor(adjustedIndex / responsiveItemsPerView) ? 'active' : ''}`}
-                  onClick={() => setCurrentIndex((index * responsiveItemsPerView) + products.length)}
+                  className={`indicator ${Math.floor(currentIndex / responsiveItemsPerView) === index ? 'active' : ''}`}
+                  onClick={() => {
+                    const targetIndex = Math.min(slideIndex, maxIndex)
+                    setCurrentIndex(targetIndex)
+                  }}
                 />
               )
             })}

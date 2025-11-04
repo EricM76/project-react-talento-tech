@@ -1,0 +1,33 @@
+const BASE_URL = 'https://69057de8ee3d0d14c132c373.mockapi.io'
+
+const getProducts = async () => {
+    const response = await fetch(`${BASE_URL}/products`)
+    const data = await response.json()
+    return data
+}
+
+const getProductById = async (id) => {
+    const response = await fetch(`${BASE_URL}/products/${id}`)
+    const data = await response.json()
+    return data
+}
+
+const createProduct = async (product) => {
+    const response = await fetch(`${BASE_URL}/products`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(product)
+    })
+
+    if (!response.ok) {
+        throw new Error('Failed to create product')
+    }
+
+    const result = await response.json()
+    
+    return result
+}
+
+export { getProducts, createProduct, getProductById }

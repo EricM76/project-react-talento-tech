@@ -9,6 +9,7 @@ import { ScrollToTop } from './components/ScrollToTop'
 import { Products } from './pages/Products/Products'
 import { ProductDetail } from './pages/ProductDetail/ProductDetail'
 import { CartProvider } from './context/CartProvider'
+import { ProductFormContainer } from './components/adminComponents/ProductFormContainer/PRoductFormContainer'
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
         <Route path='/products' element={<Products/>}/>
         <Route path='/products/:id' element={<ProductDetail/>}/>
         <Route path='/categories' element={<Categories/>}/>
+        <Route path='/admin' element={<ProductFormContainer/>}/>
         <Route path='*' element={<NotFound/>}/>
       </Routes>
       <Footer/>

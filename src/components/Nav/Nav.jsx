@@ -36,7 +36,7 @@ export const Nav = ({ isOpen, onClose, onCartToggle, cartQuantity }) => {
         <NavLink to="/categories" onClick={handleLinkClick}>Categorías</NavLink>
       </li>
       <li>
-        <NavLink to="/sell" onClick={handleLinkClick}>
+        <NavLink to="/admin" onClick={handleLinkClick}>
           Vender
         </NavLink>
       </li>

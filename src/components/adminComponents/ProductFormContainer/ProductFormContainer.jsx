@@ -1,5 +1,8 @@
 import React, { useState } from 'react'
 import { uploadToImgbb } from '../../../services/uploadImage';
+import { ProductFormUI } from '../ProductFormUI/ProductFormUI';
+import { validateProduct } from '../../../utils/validateProduct';
+import { createProduct } from '../../../services/products';
 
 export const ProductFormContainer = () => {
 
@@ -13,6 +16,7 @@ export const ProductFormContainer = () => {
     discount: 0,
     description: '',
     category: '',
+    subcategory: '',
     section: '',
     brand: '',
   });
@@ -23,7 +27,11 @@ export const ProductFormContainer = () => {
     setProduct({ ...product, [name]: value });
   }
 
-  handleSubmit = async (e) => {
+  const handleImageUpload = (file) => {
+    setFile(file);
+  }
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const formData = new FormData(e.target);
     const product = Object.fromEntries(formData);
@@ -55,6 +63,14 @@ export const ProductFormContainer = () => {
 
 
   return (
-    <ProductFormUI product={product} handleChange={handleChange} handleSubmit={handleSubmit} />
+    <div className="container products-wrapper">
+      <ProductFormUI 
+        product={product} 
+        onChange={handleChange} 
+        onSubmit={handleSubmit} 
+        errors={errors} loading={loading} 
+        onImageUpload={handleImageUpload} 
+      />
+    </div>
   )
 }

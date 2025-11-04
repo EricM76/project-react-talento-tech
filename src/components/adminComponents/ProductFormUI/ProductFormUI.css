@@ -272,6 +272,44 @@ textarea.form-input {
   font-family: var(--base-font-family);
 }
 
+.character-counter {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin-top: 5px;
+  font-size: 1.3em;
+  color: var(--gray);
+}
+
+.character-count {
+  font-weight: 600;
+  transition: color 0.3s ease;
+}
+
+.character-count-valid {
+  color: var(--green);
+}
+
+.character-count-warning {
+  color: #ff9800;
+}
+
+.character-count-error {
+  color: rgb(248, 69, 37);
+}
+
+.character-limit {
+  color: var(--gray);
+  opacity: 0.7;
+}
+
+.character-min {
+  color: var(--gray);
+  opacity: 0.6;
+  font-size: 0.9em;
+  margin-left: auto;
+}
+
 .form-error {
   color: rgb(248, 69, 37);
   font-size: 1.4em;

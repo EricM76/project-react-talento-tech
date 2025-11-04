@@ -243,6 +243,7 @@ export const ProductFormUI = ({
                         id="subcategory"
                         value={product.subcategory || ''}
                         onChange={onChange}
+                        onBlur={onBlur}
                         className="form-input form-select"
                         disabled={!product.category || subcategories.length === 0}
                       >
@@ -266,6 +267,7 @@ export const ProductFormUI = ({
                         id="brand"
                         value={product.brand}
                         onChange={onChange}
+                        onBlur={onBlur}
                         className="form-input form-select"
                       >
                         <option value="">Seleccione una marca</option>
@@ -286,6 +288,7 @@ export const ProductFormUI = ({
                         id="section"
                         value={product.section}
                         onChange={onChange}
+                        onBlur={onBlur}
                         className="form-input form-select"
                       >
                         <option value="">Seleccione una sección</option>
@@ -308,7 +311,21 @@ export const ProductFormUI = ({
                     onChange={onChange}
                     onBlur={onBlur}
                     className="form-input"
+                    maxLength={500}
                   />
+                  <div className="character-counter">
+                    <span className={`character-count ${
+                      !product.description || product.description.trim().length < 20 
+                        ? 'character-count-error' 
+                        : product.description.trim().length > 450 
+                          ? 'character-count-warning' 
+                          : 'character-count-valid'
+                    }`}>
+                      {product.description ? product.description.trim().length : 0}
+                    </span>
+                    <span className="character-limit">/ 500</span>
+                    <span className="character-min">(mín. 20)</span>
+                  </div>
                   {errors.description && <p className="form-error">{errors.description}</p>}
                 </div>
                 <button 

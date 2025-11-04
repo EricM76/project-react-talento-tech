@@ -37,6 +37,8 @@ export const ProductFormContainer = () => {
       case 'name':
         if (!value || value.trim() === '') {
           fieldError = 'El nombre es requerido';
+        } else if (value.trim().length < 10) {
+          fieldError = 'El nombre debe tener al menos 10 caracteres';
         }
         break;
       case 'price':
@@ -52,11 +54,33 @@ export const ProductFormContainer = () => {
       case 'description':
         if (!value || value.trim() === '') {
           fieldError = 'La descripción es requerida';
+        } else {
+          const descLength = value.trim().length;
+          if (descLength < 20) {
+            fieldError = 'La descripción debe tener al menos 20 caracteres';
+          } else if (descLength > 500) {
+            fieldError = 'La descripción no puede tener más de 500 caracteres';
+          }
         }
         break;
       case 'category':
         if (!value || value.trim() === '') {
           fieldError = 'La categoria es requerida';
+        }
+        break;
+      case 'subcategory':
+        if (!value || value.trim() === '') {
+          fieldError = 'La subcategoría es requerida';
+        }
+        break;
+      case 'brand':
+        if (!value || value.trim() === '') {
+          fieldError = 'La marca es requerida';
+        }
+        break;
+      case 'section':
+        if (!value || value.trim() === '') {
+          fieldError = 'La sección es requerida';
         }
         break;
       default:
@@ -78,7 +102,32 @@ export const ProductFormContainer = () => {
   }
 
   const handleImageUpload = (file) => {
+    // Validar peso máximo de la imagen (5MB)
+    if (file && file.size > 5 * 1024 * 1024) {
+      setErrors(prevErrors => {
+        const newErrors = { ...prevErrors };
+        newErrors.image = 'La imagen no puede pesar más de 5MB';
+        return newErrors;
+      });
+      return; // No actualizar el archivo si excede el tamaño
+    }
+    
     setFile(file);
+    // Validar imagen en tiempo real: eliminar error si se sube una imagen válida
+    if (file) {
+      setErrors(prevErrors => {
+        const newErrors = { ...prevErrors };
+        delete newErrors.image;
+        return newErrors;
+      });
+    } else {
+      // Agregar error si se elimina la imagen
+      setErrors(prevErrors => {
+        const newErrors = { ...prevErrors };
+        newErrors.image = 'La imagen es requerida';
+        return newErrors;
+      });
+    }
   }
 
   const handleSubmit = async (e) => {
@@ -95,7 +144,7 @@ export const ProductFormContainer = () => {
     setLoading(true);
     
     try {
-      const imageURL =uploadToImgbb(file[0]);
+      const imageURL = await uploadToImgbb(file);
       const newProduct = { ...product, 
         price: product.price * (1 - product.discount / 100),
         image: imageURL 

@@ -7,6 +7,7 @@ export const ProductFormUI = ({
   errors,
   loading,
   onChange,
+  onBlur,
   onSubmit,
   onImageUpload
 }) => {
@@ -163,6 +164,7 @@ export const ProductFormUI = ({
                     id="name"
                     value={product.name} 
                     onChange={onChange}
+                    onBlur={onBlur}
                     className="form-input"
                   />
                   {errors.name && <p className="form-error">{errors.name}</p>}
@@ -177,6 +179,7 @@ export const ProductFormUI = ({
                         id="price"
                         value={product.price} 
                         onChange={onChange}
+                        onBlur={onBlur}
                         className="form-input"
                       />
                       {errors.price && <p className="form-error">{errors.price}</p>}
@@ -191,6 +194,7 @@ export const ProductFormUI = ({
                         id="discount"
                         value={product.discount} 
                         onChange={onChange}
+                        onBlur={onBlur}
                         className="form-input"
                       />
                       {errors.discount && <p className="form-error">{errors.discount}</p>}
@@ -218,6 +222,7 @@ export const ProductFormUI = ({
                             }
                           }
                         }}
+                        onBlur={onBlur}
                         className="form-input form-select"
                       >
                         <option value="">Seleccione una categoría</option>
@@ -301,6 +306,7 @@ export const ProductFormUI = ({
                     id="description"
                     value={product.description} 
                     onChange={onChange}
+                    onBlur={onBlur}
                     className="form-input"
                   />
                   {errors.description && <p className="form-error">{errors.description}</p>}
@@ -308,9 +314,10 @@ export const ProductFormUI = ({
                 <button 
                   type="submit" 
                   disabled={loading}
-                  className="btn btn-primary product-form-submit"
+                  className="product-form-submit"
                 >
-                  {loading ? 'Guardando...' : 'Guardar'}
+                  <i className={loading ? "fas fa-spinner fa-spin" : "fas fa-save"}></i>
+                  <span>{loading ? 'Guardando...' : 'Guardar'}</span>
                 </button>
               </div>
             </div>

@@ -280,31 +280,44 @@ textarea.form-input {
 }
 
 .product-form-submit {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
   width: 100%;
+  padding: 15px 20px;
   background-color: var(--light-blue);
   color: #ffffff;
-  font-size: 1.6em;
-  padding: 12px 30px;
-  border-radius: 8px;
   border: none;
-  margin-top: 20px;
+  border-radius: 8px;
+  font-size: 1.6em;
+  font-weight: 400;
   cursor: pointer;
-  transition: background-color 0.3s ease, transform 0.1s ease;
+  transition: all 0.3s ease;
+  text-align: center;
+  box-shadow: 0 2px 4px rgba(18, 89, 195, 0.2);
+  margin-top: 20px;
 }
 
 .product-form-submit:hover:not(:disabled) {
   background-color: var(--dark-blue);
-  transform: translateY(-1px);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(18, 89, 195, 0.3);
 }
 
 .product-form-submit:active:not(:disabled) {
   transform: translateY(0);
+  box-shadow: 0 2px 4px rgba(18, 89, 195, 0.2);
 }
 
 .product-form-submit:disabled {
   background-color: var(--gray);
   cursor: not-allowed;
   opacity: 0.6;
+}
+
+.product-form-submit i {
+  font-size: 1.8em;
 }
 
 /*====== Media Queries ======*/

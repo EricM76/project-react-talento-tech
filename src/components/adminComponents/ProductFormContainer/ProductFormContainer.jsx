@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { useNavigate } from 'react-router-dom';
 import { uploadToImgbb } from '../../../services/uploadImage';
 import { ProductFormUI } from '../ProductFormUI/ProductFormUI';
 import { validateProduct } from '../../../utils/validateProduct';
@@ -9,6 +10,7 @@ export const ProductFormContainer = () => {
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
   const [file, setFile] = useState(null);
+  const navigate = useNavigate();
 
   const [product, setProduct] = useState({
     name: '',
@@ -62,8 +64,6 @@ export const ProductFormContainer = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const formData = new FormData(e.target);
-    const product = Object.fromEntries(formData);
 
     const newErrors = validateProduct(product, file);
     if (Object.keys(newErrors).length > 0) {
@@ -80,13 +80,26 @@ export const ProductFormContainer = () => {
         image: imageURL 
       };
 
-      await createProduct(newProduct);
+      const createdProduct = await createProduct(newProduct);
+
+      if (createdProduct?.id) {
+        navigate(`/products/${createdProduct.id}`);
+      }
     
     } catch (error) {
-      console.error(error);
-      setErrors({ error: 'Error al guardar el producto' });
+      setErrors({ error: error.message || 'Error al guardar el producto' });
     } finally {
       setLoading(false);
+      setFile(null);
+      setProduct({
+        name: '',
+        price: 0,
+        discount: 0,
+        description: '',
+        category: '',
+        subcategory: '',
+      });
+      setErrors({});
     }
       
   }

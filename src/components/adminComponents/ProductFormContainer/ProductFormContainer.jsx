@@ -90,16 +90,6 @@ export const ProductFormContainer = () => {
       setErrors({ error: error.message || 'Error al guardar el producto' });
     } finally {
       setLoading(false);
-      setFile(null);
-      setProduct({
-        name: '',
-        price: 0,
-        discount: 0,
-        description: '',
-        category: '',
-        subcategory: '',
-      });
-      setErrors({});
     }
       
   }

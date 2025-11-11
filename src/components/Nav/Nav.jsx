@@ -47,18 +47,8 @@ export const Nav = ({ isOpen, onClose, onCartToggle, cartQuantity }) => {
           {cartQuantity > 0 && (
             <span className="nav-cart-badge">{cartQuantity}</span>
           )}
-          <i className="fas fa-shopping-cart"></i>
+          <i className="fas fa-shopping-cart"></i> Mi carrito
         </span>
-      </li>
-      <li>
-        <span id="link-register">
-          <i className="fas fa-address-card"></i>
-        </span>
-      </li>
-      <li>
-        <Link to="/users/login" onClick={handleLinkClick}>
-          <i className="fas fa-sign-in-alt"></i>
-        </Link>
       </li>
     </ul>
   </nav>

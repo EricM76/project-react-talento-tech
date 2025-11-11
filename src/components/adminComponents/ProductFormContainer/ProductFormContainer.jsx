@@ -4,6 +4,7 @@ import { uploadToImgbb } from '../../../services/uploadImage';
 import { ProductFormUI } from '../ProductFormUI/ProductFormUI';
 import { validateProduct } from '../../../utils/validateProduct';
 import { createProduct } from '../../../services/products';
+import Swal from 'sweetalert2';
 
 export const ProductFormContainer = () => {
 
@@ -83,11 +84,25 @@ export const ProductFormContainer = () => {
       const createdProduct = await createProduct(newProduct);
 
       if (createdProduct?.id) {
+        await Swal.fire({
+          icon: 'success',
+          title: 'Producto guardado',
+          text: 'El producto se creó correctamente.',
+          timer: 2000,
+          timerProgressBar: true,
+          showConfirmButton: false
+        });
         navigate(`/products/${createdProduct.id}`);
       }
     
     } catch (error) {
       setErrors({ error: error.message || 'Error al guardar el producto' });
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: error.message || 'Ocurrió un error al guardar el producto.',
+        confirmButtonText: 'Aceptar'
+      });
     } finally {
       setLoading(false);
     }

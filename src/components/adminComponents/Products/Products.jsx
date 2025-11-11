@@ -66,6 +66,17 @@ export const Products = () => {
               <span>Nombre</span>
               <input type="text" value={product.name || ''} readOnly />
             </label>
+          <div className="products__detail-inline">
+            <label className="products__detail-field">
+              <span>Stock</span>
+              <input type="text" value={formatStock(product.stock)} readOnly />
+            </label>
+            <label className="products__detail-field">
+              <span>Estado</span>
+              <input type="text" value={product.status || 'Activo'} readOnly />
+            </label>
+          </div>
+          <div className="products__detail-inline">
             <label className="products__detail-field">
               <span>Precio</span>
               <input type="text" value={formatCurrency(product.price)} readOnly />
@@ -75,17 +86,20 @@ export const Products = () => {
               <input type="text" value={formatDiscount(product.discount)} readOnly />
             </label>
             <label className="products__detail-field">
-              <span>Categoría</span>
-              <input type="text" value={product.category || product.section || 'Sin categoría'} readOnly />
-            </label>
-            <label className="products__detail-field">
               <span>Sección</span>
               <input type="text" value={product.section || 'Sin sección'} readOnly />
             </label>
+          </div>
+          <div className="products__detail-inline">
             <label className="products__detail-field">
-              <span>Stock</span>
-              <input type="text" value={formatStock(product.stock)} readOnly />
+              <span>Marca</span>
+              <input type="text" value={product.brand || 'Sin marca'} readOnly />
             </label>
+            <label className="products__detail-field">
+              <span>Categoría</span>
+              <input type="text" value={product.category || product.section || 'Sin categoría'} readOnly />
+            </label>
+          </div>
           </div>
           <label className="products__detail-field products__detail-description">
             <span>Descripción</span>
@@ -164,39 +178,39 @@ export const Products = () => {
                     <tr>
                       <td className="products__name">{product.name}</td>
                       <td>{formatCurrency(product.price)}</td>
-                  <td>{formatDiscount(product.discount)}</td>
-                  <td>{product.category || product.section || 'Sin categoría'}</td>
-                  <td>{formatStock(product.stock)}</td>
-                  <td>
-                    <div className="products__actions">
-                      <button
-                        type="button"
-                        className={`products__button products__button--secondary${isExpanded ? ' is-active' : ''}`}
-                        onClick={() => handleView(product)}
-                        aria-expanded={isExpanded}
-                        aria-controls={`product-detail-${product.id}`}
-                      >
-                        <i className={`fa-solid ${isExpanded ? 'fa-eye-slash' : 'fa-eye'}`} aria-hidden="true" />
-                        <span className="sr-only">Ver detalle</span>
-                      </button>
-                      <button
-                        type="button"
-                        className="products__button products__button--primary"
-                        onClick={() => handleEdit(product)}
-                      >
-                        <i className="fa-solid fa-pen-to-square" aria-hidden="true" />
-                        <span className="sr-only">Editar</span>
-                      </button>
-                      <button
-                        type="button"
-                        className="products__button products__button--danger"
-                        onClick={() => handleDelete(product)}
-                      >
-                        <i className="fa-solid fa-trash-can" aria-hidden="true" />
-                        <span className="sr-only">Eliminar</span>
-                      </button>
-                    </div>
-                  </td>
+                      <td>{formatDiscount(product.discount)}</td>
+                      <td>{product.category || product.section || 'Sin categoría'}</td>
+                      <td>{formatStock(product.stock)}</td>
+                      <td>
+                        <div className="products__actions">
+                          <button
+                            type="button"
+                            className={`products__button products__button--secondary${isExpanded ? ' is-active' : ''}`}
+                            onClick={() => handleView(product)}
+                            aria-expanded={isExpanded}
+                            aria-controls={`product-detail-${product.id}`}
+                          >
+                            <i className={`fa-solid ${isExpanded ? 'fa-eye-slash' : 'fa-eye'}`} aria-hidden="true" />
+                            <span className="sr-only">Ver detalle</span>
+                          </button>
+                          <button
+                            type="button"
+                            className="products__button products__button--primary"
+                            onClick={() => handleEdit(product)}
+                          >
+                            <i className="fa-solid fa-pen-to-square" aria-hidden="true" />
+                            <span className="sr-only">Editar</span>
+                          </button>
+                          <button
+                            type="button"
+                            className="products__button products__button--danger"
+                            onClick={() => handleDelete(product)}
+                          >
+                            <i className="fa-solid fa-trash-can" aria-hidden="true" />
+                            <span className="sr-only">Eliminar</span>
+                          </button>
+                        </div>
+                      </td>
                     </tr>
                     {isExpanded && (
                       <tr className="products__detail-row" id={`product-detail-${product.id}`}>

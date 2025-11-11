@@ -1,6 +1,8 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import './LoginFormContainer.css'
 import { LoginFormUI } from '../LoginFormUI'
+import { useNavigate } from 'react-router-dom'
+import { AuthContext } from '../../../context/AuthContext'
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
@@ -24,6 +26,7 @@ const validateCredentials = (credentials) => {
 }
 
 export const LoginFormContainer = () => {
+  const { setAuth } = useContext(AuthContext)
   const [credentials, setCredentials] = useState({
     email: '',
     password: '',
@@ -31,6 +34,8 @@ export const LoginFormContainer = () => {
   })
   const [errors, setErrors] = useState({})
   const [loading, setLoading] = useState(false)
+
+  const navigate = useNavigate()
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target
@@ -90,10 +95,11 @@ export const LoginFormContainer = () => {
 
     try {
       await new Promise((resolve) => setTimeout(resolve, 800))
-      console.log('Intento de inicio de sesión', {
+      setAuth({
         email: credentials.email,
         remember: credentials.remember
       })
+      navigate('/admin/dashboard')
     } catch (error) {
       setErrors({
         general:

@@ -1,0 +1,13 @@
+.login-wrapper {
+  max-width: 480px;
+  margin: 40px auto;
+  font-family: var(--base-font-family, 'Montserrat', sans-serif);
+}
+
+@media (max-width: 575px) {
+  .login-wrapper {
+    margin: 30px auto;
+    padding: 0 20px;
+  }
+}
+

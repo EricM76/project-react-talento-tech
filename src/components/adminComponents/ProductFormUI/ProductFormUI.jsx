@@ -87,11 +87,6 @@ export const ProductFormUI = ({
 
   return (
     <>
-      <div className="row">
-        <div className="col-12">
-          <h1 className="product-form-title">Agregar producto</h1>
-        </div>
-      </div>
       <div className="product-form-container">
         <form onSubmit={onSubmit} className="product-form">
           <div className="row">

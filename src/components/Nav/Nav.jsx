@@ -35,11 +35,6 @@ export const Nav = ({ isOpen, onClose, onCartToggle, cartQuantity }) => {
       <li>
         <NavLink to="/categories" onClick={handleLinkClick}>Categorías</NavLink>
       </li>
-      <li>
-        <NavLink to="/admin" onClick={handleLinkClick}>
-          Vender
-        </NavLink>
-      </li>
     </ul>
     <ul className="right-navbar">
       <li>

@@ -52,6 +52,12 @@
   gap: 1rem;
 }
 
+.sidebar-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
 .sidebar-link {
   color: #cbd5f5;
   text-decoration: none;
@@ -63,6 +69,27 @@
 
 .sidebar-link:hover {
   background-color: rgba(59, 130, 246, 0.2);
+  color: #ffffff;
+}
+
+.sidebar-action-button {
+  border: none;
+  background-color: rgba(59, 130, 246, 0.2);
+  color: #ffffff;
+  font-size: 2rem;
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease;
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sidebar-action-button:hover {
+  background-color: rgba(59, 130, 246, 0.35);
   color: #ffffff;
 }
 

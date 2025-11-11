@@ -64,6 +64,12 @@
   color: #2f3a54;
 }
 
+.add-product-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
  .summary-grid {
    display: grid;
    gap: 1.5rem;

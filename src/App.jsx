@@ -7,12 +7,12 @@ import { ScrollToTop } from './components/ScrollToTop'
 import { Products } from './pages/Products/Products'
 import { ProductDetail } from './pages/ProductDetail/ProductDetail'
 import { CartProvider } from './context/CartProvider'
-import { ProductFormContainer } from './components/adminComponents/ProductFormContainer'
-import { Dashboard } from './pages/Admin'
+import { Dashboard } from './components/adminComponents/Dashboard/Dashboard'
 import { MainLayout } from './layouts/MainLayout'
 import { AdminLayout } from './layouts/AdminLayout'
 import { LoginFormContainer } from './components/authComponents/LoginFormContainer'
 import { ProtectedRoute } from './components/ProtectedRoute'
+import { AdminProductsPage, ProductCreatePage } from './components/adminComponents/Products'
 import { AuthProvider } from './context/AuthProvider'
 
 function App() {
@@ -28,16 +28,32 @@ function App() {
           <Route path='/categories' element={<Categories />} />
         </Route>
         <Route path='/admin' element={<AdminLayout />}>
-        <Route index element={<LoginFormContainer />} />
-
-          <Route path='/admin/dashboard' element={
-            <ProtectedRoute>
+          <Route index element={<LoginFormContainer />} />
+          <Route
+            path='dashboard'
+            element={
+              <ProtectedRoute>
                 <Dashboard />
-          </ProtectedRoute>}>
-          </Route>
-
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path='productos'
+            element={
+              <ProtectedRoute>
+                <AdminProductsPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path='productos/nuevo'
+            element={
+              <ProtectedRoute>
+                <ProductCreatePage />
+              </ProtectedRoute>
+            }
+          />
         </Route>
-
         <Route path='*' element={<NotFound />} />
       </Routes>
     </CartProvider>

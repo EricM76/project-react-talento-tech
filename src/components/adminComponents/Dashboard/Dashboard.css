@@ -8,12 +8,12 @@
   line-height: 1.6;
 }
 
- .admin-main {
-   flex: 1;
-   margin-left: 0;
-   padding: 1.5rem;
-   transition: margin-left 0.3s ease;
- }
+.admin-main {
+  flex: 1;
+  margin-left: 0;
+  padding: 1.5rem;
+  transition: margin-left 0.3s ease;
+}
 
  .admin-header {
    display: flex;
@@ -187,6 +187,20 @@
 .panel-grid strong {
   font-size: 1.35rem;
   color: #111827;
+}
+
+.dashboard-products-table {
+  display: block;
+}
+
+.dashboard-products-table .products__container {
+  padding: 0;
+  background: transparent;
+  min-height: auto;
+}
+
+.dashboard-products-table .products__header {
+  display: none;
 }
 
 .chart-grid {
@@ -419,7 +433,7 @@
 
  @media (min-width: 992px) {
    .admin-main {
-    margin-left: 300px;
+    margin-left: 200px;
    }
 
    .sidebar-toggle {

@@ -1,15 +1,20 @@
 import React from 'react'
+import { NavLink, useNavigate } from 'react-router-dom'
 import './Sidebar.css'
 
 const menuItems = [
-  { label: 'Panel', href: '#resumen' },
-  { label: 'Usuarios', href: '#usuarios' },
-  { label: 'Productos', href: '#productos' },
-  { label: 'Ventas', href: '#ventas' },
-  { label: 'Reportes', href: '#reportes' }
+  { label: 'Panel', to: '/admin/dashboard' },
+  { label: 'Productos', to: '/admin/productos' }
 ]
 
-export const Sidebar = ({ isOpen, onClose, onNavigate, onOpenAddProduct }) => {
+export const Sidebar = ({ isOpen, onClose }) => {
+  const navigate = useNavigate()
+
+  const handleAddProduct = () => {
+    navigate('/admin/productos/nuevo')
+    onClose?.()
+  }
+
   return (
     <aside className={`admin-sidebar ${isOpen ? 'is-open' : ''}`}>
       <div className='sidebar-header'>
@@ -27,26 +32,21 @@ export const Sidebar = ({ isOpen, onClose, onNavigate, onOpenAddProduct }) => {
       <nav className='sidebar-nav'>
         {menuItems.map((item) => (
           <div key={item.label} className='sidebar-item'>
-            <a
-              href={item.href}
-              className='sidebar-link'
-              onClick={() => {
-                onNavigate?.(item.href)
-                onClose()
-              }}
+            <NavLink
+              to={item.to}
+              className={({ isActive }) => `sidebar-link${isActive ? ' is-active' : ''}`}
+              onClick={onClose}
+              end
             >
               {item.label}
-            </a>
+            </NavLink>
             {item.label === 'Productos' && (
               <button
                 type='button'
                 className='sidebar-action-button'
                 title='Agregar nuevo producto'
                 aria-label='Agregar nuevo producto'
-                onClick={() => {
-                  onOpenAddProduct?.()
-                  onClose()
-                }}
+                onClick={handleAddProduct}
               >
                 <i className='fa-solid fa-plus' aria-hidden='true' />
               </button>

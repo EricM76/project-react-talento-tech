@@ -93,13 +93,18 @@ export const ProductsContainer = () => {
   )
 
   const categoryOptions = useMemo(() => {
+    // Cargar categorías desde categories.json, igual que en ProductFormUI
+    if (categoriesData.length > 0) {
+      return categoriesData.map(cat => cat.name)
+    }
+    // Fallback: si no hay categoriesData, usar las de los productos
     const values = new Set()
     productsWithFallback.forEach((product) => {
       if (product.category) values.add(product.category)
       if (product.section) values.add(product.section)
     })
     return Array.from(values)
-  }, [productsWithFallback])
+  }, [categoriesData, productsWithFallback])
 
   const sectionOptions = useMemo(() => {
     const values = new Set()

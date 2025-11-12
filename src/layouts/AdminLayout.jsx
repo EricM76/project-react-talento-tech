@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { Outlet, useLocation } from 'react-router-dom'
 import { Sidebar } from '../components/adminComponents/Sidebar/Sidebar'
-import '../components/adminComponents/Dashboard/Dashboard.css'
+import '../pages/Dashboard/Dashboard.css'
 
 export const AdminLayout = () => {
   const location = useLocation()

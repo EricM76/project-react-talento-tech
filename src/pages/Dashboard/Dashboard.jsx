@@ -1,4 +1,3 @@
-import React from 'react'
 import './Dashboard.css'
 import { useOutletContext } from 'react-router-dom'
 
@@ -167,3 +166,4 @@ export const Dashboard = () => {
     </>
   )
 }
+

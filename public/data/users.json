@@ -1,0 +1,62 @@
+[
+  {
+    "id": 1,
+    "name": "Admin",
+    "surname": "Sistema",
+    "email": "admin@gmail.com",
+    "password": "1234",
+    "token": null,
+    "role": "admin",
+    "active": true
+  },
+  {
+    "id": 2,
+    "name": "Belén",
+    "surname": "Romero",
+    "email": "belen.romero@gmail.com",
+    "password": "1234",
+    "token": null,
+    "role": "admin",
+    "active": true
+  },
+  {
+    "id": 3,
+    "name": "Talento",
+    "surname": "Tech",
+    "email": "talento.tech@gmail.com",
+    "password": "1234",
+    "token": null,
+    "role": "admin",
+    "active": true
+  },
+  {
+    "id": 4,
+    "name": "Ana",
+    "surname": "Martínez",
+    "email": "ana.martinez@gmail.com",
+    "password": "password012",
+    "token": null,
+    "role": "user",
+    "active": false
+  },
+  {
+    "id": 5,
+    "name": "Luis",
+    "surname": "Fernández",
+    "email": "luis.fernandez@gmail.com",
+    "password": "password345",
+    "token": null,
+    "role": "user",
+    "active": false
+  },
+  {
+    "id": 6,
+    "name": "Laura",
+    "surname": "López",
+    "email": "laura.lopez@gmail.com",
+    "password": "password678",
+    "token": null,
+    "role": "user",
+    "active": false
+  }
+]

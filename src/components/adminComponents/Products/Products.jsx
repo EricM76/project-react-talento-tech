@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useEffect, useMemo, useRef, useState } from 'react'
 import './Products.css'
 import { getProducts } from '../../../services/products'
 
@@ -42,6 +42,9 @@ export const Products = () => {
   const [expandedProductId, setExpandedProductId] = useState(null)
   const [editingProductId, setEditingProductId] = useState(null)
   const [editingValues, setEditingValues] = useState(null)
+  const [editingImagePreview, setEditingImagePreview] = useState(null)
+  const [editingImageFile, setEditingImageFile] = useState(null)
+  const fileInputRef = useRef(null)
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -108,6 +111,7 @@ export const Products = () => {
 
   const renderProductDetailContent = (product, isEditing, currentValues) => {
     const detailImage = product.image || product.thumbnail || FALLBACK_IMAGE
+    const displayedImage = isEditing && editingImagePreview ? editingImagePreview : detailImage
 
     return (
       <div className="products__detail">
@@ -180,10 +184,32 @@ export const Products = () => {
         </div>
 
         <div className="products__detail-media">
-          <figure>
-            <img src={detailImage} alt={`Imagen de ${product.name}`} />
+          <figure className="products__image-wrapper">
+            <img src={displayedImage} alt={`Imagen de ${product.name}`} />
+            {isEditing && (
+              <>
+                <button
+                  type="button"
+                  className="products__image-button"
+                  onClick={() => fileInputRef.current?.click()}
+                  title="Cambiar imagen"
+                >
+                  <i className="fa-solid fa-camera-rotate" aria-hidden="true" />
+                </button>
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/*"
+                  className="products__image-input"
+                  onChange={handleImageChange}
+                />
+              </>
+            )}
             <figcaption>Imagen del producto</figcaption>
           </figure>
+          {isEditing && editingImageFile && (
+            <p className="products__image-hint">La nueva imagen se aplicará al guardar los cambios.</p>
+          )}
         </div>
       </div>
     )
@@ -200,11 +226,21 @@ export const Products = () => {
     setExpandedProductId(product.id)
     setEditingProductId(product.id)
     setEditingValues(createEditableValues(product))
+    setEditingImagePreview(product.image || product.thumbnail || FALLBACK_IMAGE)
+    setEditingImageFile(null)
+    if (fileInputRef.current) {
+      fileInputRef.current.value = ''
+    }
   }
 
   const handleCancelEditing = () => {
     setEditingProductId(null)
     setEditingValues(null)
+    setEditingImagePreview(null)
+    setEditingImageFile(null)
+    if (fileInputRef.current) {
+      fileInputRef.current.value = ''
+    }
   }
 
   const parseNumberValue = (value, fallback = 0) => {
@@ -230,7 +266,9 @@ export const Products = () => {
       stock: parseNumberValue(editingValues.stock, product.stock || 0),
       brand: editingValues.brand,
       status: editingValues.status || product.status || 'Activo',
-      description: editingValues.description
+      description: editingValues.description,
+      image: editingImageFile ? editingImagePreview : product.image,
+      thumbnail: editingImageFile ? editingImagePreview : product.thumbnail
     }
 
     setProducts((prevProducts) =>
@@ -238,10 +276,30 @@ export const Products = () => {
     )
     setEditingProductId(null)
     setEditingValues(null)
+    setEditingImagePreview(null)
+    setEditingImageFile(null)
+    if (fileInputRef.current) {
+      fileInputRef.current.value = ''
+    }
   }
 
   const handleDelete = (product) => {
     console.log('Eliminar:', product)
+  }
+
+  const handleImageChange = (event) => {
+    const file = event.target.files?.[0]
+    if (!file) {
+      return
+    }
+    setEditingImageFile(file)
+    const reader = new FileReader()
+    reader.onload = () => {
+      if (typeof reader.result === 'string') {
+        setEditingImagePreview(reader.result)
+      }
+    }
+    reader.readAsDataURL(file)
   }
 
   return (

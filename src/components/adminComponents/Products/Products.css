@@ -400,6 +400,11 @@ select.products__table-select.is-editable,
   margin: 0;
 }
 
+.products__image-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
 .products__detail-media img {
   display: block;
   width: 100%;
@@ -407,6 +412,50 @@ select.products__table-select.is-editable,
   border-radius: 16px;
   box-shadow: 0 10px 24px rgba(15, 23, 42, 0.18);
   object-fit: cover;
+}
+
+.products__image-button {
+  position: absolute;
+  bottom: 12px;
+  right: 12px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 3rem;
+  height: 3rem;
+  border: none;
+  border-radius: 50%;
+  background: rgba(17, 24, 39, 0.92);
+  color: #fff;
+  font-size: 0.95rem;
+  font-weight: 500;
+  cursor: pointer;
+  box-shadow: 0 8px 16px rgba(15, 23, 42, 0.3);
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.products__image-button i {
+  font-size: 1.25rem;
+}
+
+.products__image-button:hover {
+  background: rgba(17, 24, 39, 0.95);
+  transform: translateY(-1px);
+}
+
+.products__image-button:focus-visible {
+  outline: 2px solid rgba(37, 99, 235, 0.45);
+  outline-offset: 3px;
+}
+
+.products__image-input {
+  display: none;
+}
+
+.products__image-hint {
+  margin-top: 0.75rem;
+  font-size: 0.95rem;
+  color: var(--products-muted);
 }
 
 .products__detail-media figcaption {

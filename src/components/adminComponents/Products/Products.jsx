@@ -187,6 +187,7 @@ export const Products = () => {
 
           <div className="products__detail-media">
           <figure className="products__image-wrapper">
+            <figcaption>Imagen del producto</figcaption>
             <img src={displayedImage} alt={`Imagen de ${product.name}`} />
             {isEditing && (
               <>
@@ -207,7 +208,6 @@ export const Products = () => {
                 />
               </>
             )}
-            <figcaption>Imagen del producto</figcaption>
           </figure>
           {isEditing && editingImageFile && (
             <p className="products__image-hint">La nueva imagen se aplicará al guardar los cambios.</p>

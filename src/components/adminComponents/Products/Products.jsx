@@ -118,21 +118,21 @@ export const Products = () => {
         <div className="products__detail-form">
           <div className="products__detail-grid">
             <label className="products__detail-field">
-              <span>Estado</span>
+              <span>Marca</span>
               {isEditing ? (
                 <select
-                  value={currentValues.status}
-                  onChange={(event) => handleFieldChange('status', event.target.value)}
+                  value={currentValues.brand}
+                  onChange={(event) => handleFieldChange('brand', event.target.value)}
                 >
-                  <option value="">Selecciona estado</option>
-                  {statusOptions.map((status) => (
-                    <option key={status} value={status}>
-                      {status}
+                  <option value="">Sin marca</option>
+                  {brandOptions.map((brand) => (
+                    <option key={brand} value={brand}>
+                      {brand}
                     </option>
                   ))}
                 </select>
               ) : (
-                <input type="text" value={product.status || 'Activo'} readOnly />
+                <input type="text" value={product.brand || 'Sin marca'} readOnly />
               )}
             </label>
             <label className="products__detail-field">
@@ -153,22 +153,22 @@ export const Products = () => {
                 <input type="text" value={product.section || 'Sin sección'} readOnly />
               )}
             </label>
-            <label className="products__detail-field">
-              <span>Marca</span>
+            <label className="products__detail-field products__detail-field--full">
+              <span>Categoría</span>
               {isEditing ? (
                 <select
-                  value={currentValues.brand}
-                  onChange={(event) => handleFieldChange('brand', event.target.value)}
+                  value={currentValues.category}
+                  onChange={(event) => handleFieldChange('category', event.target.value)}
                 >
-                  <option value="">Sin marca</option>
-                  {brandOptions.map((brand) => (
-                    <option key={brand} value={brand}>
-                      {brand}
+                  <option value="">Sin categoría</option>
+                  {categoryOptions.map((category) => (
+                    <option key={category} value={category}>
+                      {category}
                     </option>
                   ))}
                 </select>
               ) : (
-                <input type="text" value={product.brand || 'Sin marca'} readOnly />
+                <input type="text" value={product.category || product.section || 'Sin categoría'} readOnly />
               )}
             </label>
           </div>
@@ -311,7 +311,7 @@ export const Products = () => {
               <th>Producto</th>
               <th>Precio</th>
               <th>Descuento</th>
-              <th>Categoría</th>
+              <th>Estado</th>
               <th>Stock</th>
               <th className="products__actions-column">Acciones</th>
             </tr>
@@ -392,14 +392,14 @@ export const Products = () => {
                         {isEditing ? (
                           <select
                             className="products__table-select is-editable"
-                            value={currentValues.category}
-                            onChange={(event) => handleFieldChange('category', event.target.value)}
-                            aria-label={`Categoría de ${product.name || 'producto'}`}
+                            value={currentValues.status}
+                            onChange={(event) => handleFieldChange('status', event.target.value)}
+                            aria-label={`Estado de ${product.name || 'producto'}`}
                           >
-                            <option value="">Sin categoría</option>
-                            {categoryOptions.map((category) => (
-                              <option key={category} value={category}>
-                                {category}
+                            <option value="">Selecciona estado</option>
+                            {statusOptions.map((status) => (
+                              <option key={status} value={status}>
+                                {status}
                               </option>
                             ))}
                           </select>
@@ -407,9 +407,9 @@ export const Products = () => {
                           <input
                             className="products__table-input"
                             type="text"
-                            value={product.category || product.section || 'Sin categoría'}
+                            value={product.status || 'Activo'}
                             readOnly
-                            aria-label={`Categoría de ${product.name || 'producto'}`}
+                            aria-label={`Estado de ${product.name || 'producto'}`}
                           />
                         )}
                       </td>
@@ -510,11 +510,16 @@ export const Products = () => {
               <article key={product.id} className={`products__card${isExpanded ? ' is-expanded' : ''}`}>
                 <header className="products__card-header">
                   <div>
-                    <h3 className="products__card-title">{isEditing ? currentValues.name || 'Sin nombre' : product.name}</h3>
-                    {(isEditing ? currentValues.section : product.section) && (
-                      <span className="products__card-subtitle">
-                        {isEditing ? currentValues.section : product.section}
-                      </span>
+                    {isEditing ? (
+                      <input
+                        className="products__table-input is-editable products__card-title-input"
+                        type="text"
+                        value={currentValues.name || 'Sin nombre'}
+                        onChange={(event) => handleFieldChange('name', event.target.value)}
+                        aria-label={`Nombre de ${product.name || 'producto'}`}
+                      />
+                    ) : (
+                      <h3 className="products__card-title">{product.name}</h3>
                     )}
                   </div>
                   <div className="products__card-actions">
@@ -568,22 +573,89 @@ export const Products = () => {
                   </div>
                 </header>
 
+                {isEditing && (
+                  <div className="products__card-name-field">
+                    <label className="products__detail-field">
+                      <span>Nombre</span>
+                      <input
+                        className="products__table-input is-editable"
+                        type="text"
+                        value={currentValues.name || 'Sin nombre'}
+                        onChange={(event) => handleFieldChange('name', event.target.value)}
+                        aria-label={`Nombre de ${product.name || 'producto'}`}
+                      />
+                    </label>
+                  </div>
+                )}
+
                 <div className="products__card-summary">
                   <div>
                     <span>Precio</span>
-                    <strong>{isEditing ? currentValues.price || '0' : formatCurrency(product.price)}</strong>
+                    {isEditing ? (
+                      <input
+                        className="products__table-input is-editable"
+                        type="number"
+                        value={currentValues.price || '0'}
+                        onChange={(event) => handleFieldChange('price', event.target.value)}
+                        aria-label={`Precio de ${product.name || 'producto'}`}
+                        min="0"
+                        step="0.01"
+                      />
+                    ) : (
+                      <strong>{formatCurrency(product.price)}</strong>
+                    )}
                   </div>
                   <div>
                     <span>Descuento</span>
-                    <strong>{isEditing ? `${currentValues.discount || 0}%` : formatDiscount(product.discount)}</strong>
+                    {isEditing ? (
+                      <input
+                        className="products__table-input is-editable"
+                        type="number"
+                        value={currentValues.discount || '0'}
+                        onChange={(event) => handleFieldChange('discount', event.target.value)}
+                        aria-label={`Descuento de ${product.name || 'producto'}`}
+                        min="0"
+                        max="100"
+                        step="1"
+                      />
+                    ) : (
+                      <strong>{formatDiscount(product.discount)}</strong>
+                    )}
                   </div>
                   <div>
-                    <span>Categoría</span>
-                    <strong>{isEditing ? currentValues.category || 'Sin categoría' : product.category || product.section || 'Sin categoría'}</strong>
+                    <span>Estado</span>
+                    {isEditing ? (
+                      <select
+                        className="products__table-select is-editable"
+                        value={currentValues.status}
+                        onChange={(event) => handleFieldChange('status', event.target.value)}
+                        aria-label={`Estado de ${product.name || 'producto'}`}
+                      >
+                        <option value="">Selecciona estado</option>
+                        {statusOptions.map((status) => (
+                          <option key={status} value={status}>
+                            {status}
+                          </option>
+                        ))}
+                      </select>
+                    ) : (
+                      <strong>{product.status || 'Activo'}</strong>
+                    )}
                   </div>
                   <div>
                     <span>Stock</span>
-                    <strong>{isEditing ? currentValues.stock || '0' : formatStock(product.stock)}</strong>
+                    {isEditing ? (
+                      <input
+                        className="products__table-input is-editable"
+                        type="number"
+                        value={currentValues.stock || '0'}
+                        onChange={(event) => handleFieldChange('stock', event.target.value)}
+                        aria-label={`Stock de ${product.name || 'producto'}`}
+                        min="0"
+                      />
+                    ) : (
+                      <strong>{formatStock(product.stock)}</strong>
+                    )}
                   </div>
                 </div>
 

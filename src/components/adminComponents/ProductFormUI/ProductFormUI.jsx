@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import './ProductFormUI.css'
 import { getProducts } from '../../../services/products'
+import { getCategories } from '../../../services/categories'
 
 export const ProductFormUI = ({
   product,
@@ -23,9 +24,8 @@ export const ProductFormUI = ({
     // Cargar categorías y extraer secciones y marcas
     const loadOptions = async () => {
       try {
-        // Cargar categorías
-        const categoriesResponse = await fetch('/data/categories.json');
-        const categoriesData = await categoriesResponse.json();
+        // Cargar categorías desde la API
+        const categoriesData = await getCategories();
         setCategoriesData(categoriesData);
         setCategories(categoriesData.map(cat => cat.name));
 

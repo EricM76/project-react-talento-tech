@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react'
 import { getProducts, updateProduct, deleteProduct } from '../../../services/products'
+import { getCategories } from '../../../services/categories'
 import { uploadToImgbb } from '../../../services/uploadImage'
 import { ProductsUI } from './ProductsUI'
 import Swal from 'sweetalert2'
@@ -70,11 +71,10 @@ export const ProductsContainer = () => {
   }, [])
 
   useEffect(() => {
-    // Cargar categorías para obtener subcategorías
+    // Cargar categorías desde la API para obtener subcategorías
     const fetchCategories = async () => {
       try {
-        const response = await fetch('/data/categories.json')
-        const data = await response.json()
+        const data = await getCategories()
         setCategoriesData(data)
       } catch (err) {
         console.error('Error al cargar categorías:', err)

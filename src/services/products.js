@@ -30,4 +30,22 @@ const createProduct = async (product) => {
     return result
 }
 
-export { getProducts, createProduct, getProductById }
+const updateProduct = async (id, product) => {
+    const response = await fetch(`${BASE_URL}/products/${id}`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(product)
+    })
+
+    if (!response.ok) {
+        throw new Error('Failed to update product')
+    }
+
+    const result = await response.json()
+    
+    return result
+}
+
+export { getProducts, createProduct, getProductById, updateProduct }

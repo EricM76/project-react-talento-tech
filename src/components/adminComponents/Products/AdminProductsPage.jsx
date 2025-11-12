@@ -1,6 +1,6 @@
 import React from 'react'
 import { useOutletContext } from 'react-router-dom'
-import { Products } from './Products'
+import { ProductsContainer } from './ProductsContainer'
 
 export const AdminProductsPage = () => {
   const { toggleSidebar } = useOutletContext() || {}
@@ -24,7 +24,7 @@ export const AdminProductsPage = () => {
       </header>
 
       <section className='dashboard-section standalone-products'>
-        <Products />
+        <ProductsContainer />
       </section>
     </>
   )

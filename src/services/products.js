@@ -48,4 +48,19 @@ const updateProduct = async (id, product) => {
     return result
 }
 
-export { getProducts, createProduct, getProductById, updateProduct }
+const deleteProduct = async (id) => {
+    const response = await fetch(`${BASE_URL}/products/${id}`, {
+        method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+
+    if (!response.ok) {
+        throw new Error('Failed to delete product')
+    }
+
+    return true
+}
+
+export { getProducts, createProduct, getProductById, updateProduct, deleteProduct }

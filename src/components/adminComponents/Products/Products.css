@@ -972,3 +972,27 @@ select.products__table-select.is-editable,
   }
 }
 
+/* Estilos para SweetAlert2 */
+.swal2-popup-large {
+  width: 600px !important;
+  max-width: 90vw !important;
+  font-size: 18px !important;
+}
+
+.swal2-popup-large .swal2-title {
+  font-size: 28px !important;
+  margin-bottom: 1.5rem !important;
+}
+
+.swal2-popup-large .swal2-content {
+  font-size: 18px !important;
+  padding: 0 1.5rem !important;
+}
+
+.swal2-confirm-large,
+.swal2-cancel-large {
+  font-size: 18px !important;
+  padding: 12px 24px !important;
+  min-width: 140px !important;
+}
+

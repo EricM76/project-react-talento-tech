@@ -1,7 +1,8 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react'
-import { getProducts, updateProduct } from '../../../services/products'
+import { getProducts, updateProduct, deleteProduct } from '../../../services/products'
 import { uploadToImgbb } from '../../../services/uploadImage'
 import { ProductsUI } from './ProductsUI'
+import Swal from 'sweetalert2'
 
 const formatCurrency = (value) => {
   const numericValue = Number(value) || 0
@@ -213,8 +214,64 @@ export const ProductsContainer = () => {
     }
   }
 
-  const handleDelete = (product) => {
-    console.log('Eliminar:', product)
+  const handleDelete = async (product) => {
+    const result = await Swal.fire({
+      title: '¿Estás seguro?',
+      html: `<p style="font-size: 18px;">¿Deseas eliminar el producto "<strong>${product.name}</strong>"? Esta acción no se puede deshacer.</p>`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'Sí, eliminar',
+      cancelButtonText: 'Cancelar',
+      width: '600px',
+      customClass: {
+        popup: 'swal2-popup-large',
+        confirmButton: 'swal2-confirm-large',
+        cancelButton: 'swal2-cancel-large'
+      },
+      buttonsStyling: true
+    })
+
+    if (result.isConfirmed) {
+      try {
+        setError(null)
+        await deleteProduct(product.id)
+        
+        // Actualizar la lista local de productos
+        setProducts((prevProducts) => prevProducts.filter((item) => item.id !== product.id))
+        
+        // Cerrar la vista expandida si estaba abierta
+        if (expandedProductId === product.id) {
+          setExpandedProductId(null)
+        }
+        
+        // Cerrar la edición si estaba en edición
+        if (editingProductId === product.id) {
+          setEditingProductId(null)
+          setEditingValues(null)
+          setEditingImagePreview(null)
+          setEditingImageFile(null)
+        }
+
+        await Swal.fire({
+          icon: 'success',
+          title: 'Producto eliminado',
+          text: 'El producto se eliminó correctamente.',
+          timer: 2000,
+          timerProgressBar: true,
+          showConfirmButton: false
+        })
+      } catch (err) {
+        console.error('Error al eliminar el producto:', err)
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'No se pudo eliminar el producto. Intenta nuevamente.',
+          confirmButtonText: 'Aceptar'
+        })
+      }
+    }
   }
 
   const handleImageChange = (event) => {

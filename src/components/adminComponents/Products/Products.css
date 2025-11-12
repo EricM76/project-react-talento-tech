@@ -352,7 +352,7 @@
 
 .products__detail-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  grid-template-columns: 1fr;
   gap: 1rem 1.25rem;
 }
 
@@ -427,7 +427,7 @@ select.products__table-select.is-editable,
   width: 100%;
 }
 
-@media (min-width: 769px) {
+@media (min-width: 769px) and (max-width: 1023px) {
   .products__card-detail {
     padding: 0 1.25rem 1.25rem !important;
     margin: 0 -1.25rem -1.25rem -1.25rem !important;
@@ -451,7 +451,99 @@ select.products__table-select.is-editable,
 
   .products__detail .products__detail-form .products__detail-grid {
     display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    gap: 1rem 1.25rem !important;
+    column-gap: 1.25rem !important;
+    row-gap: 1rem !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    box-sizing: border-box !important;
+  }
+
+  .products__detail .products__detail-form .products__detail-grid .products__detail-field--full {
+    grid-column: span 1 !important;
+  }
+
+  .products__detail .products__detail-bottom {
+    width: 100% !important;
+    max-width: 100% !important;
+    display: grid !important;
     grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    column-gap: 1.25rem !important;
+    row-gap: 1rem !important;
+    margin: 1rem 0 0 0 !important;
+    padding: 0 !important;
+    box-sizing: border-box !important;
+  }
+
+  .products__detail-description {
+    grid-column: span 2 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  .products__detail-bottom .products__detail-media {
+    grid-column: span 1 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    display: flex !important;
+    flex-direction: column !important;
+  }
+
+  .products__detail-bottom .products__detail-media .products__image-wrapper {
+    width: 100% !important;
+    max-width: 100% !important;
+    display: block !important;
+  }
+
+  .products__detail-bottom .products__detail-media img {
+    width: 100% !important;
+    max-width: 100% !important;
+    display: block !important;
+  }
+
+  .products__detail-field span {
+    font-size: 1.3rem !important;
+  }
+
+  .products__detail-media figcaption {
+    font-size: 1.3rem !important;
+  }
+}
+
+@media (min-width: 1024px) {
+  .products__card-detail {
+    padding: 0 1.25rem 1.25rem !important;
+    margin: 0 -1.25rem -1.25rem -1.25rem !important;
+  }
+
+  .products__detail {
+    flex-direction: column !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  .products__detail .products__detail-form {
+    width: 100% !important;
+    max-width: 100% !important;
+    flex: 1 1 100% !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  .products__detail .products__detail-form .products__detail-grid {
+    display: grid !important;
+    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
     width: 100% !important;
     max-width: 100% !important;
     gap: 1rem 1.25rem !important;
@@ -692,7 +784,7 @@ select.products__table-select.is-editable,
   }
 }
 
-@media (min-width: 481px) and (max-width: 768px) {
+@media (min-width: 481px) and (max-width: 1023px) {
   .products__card-title-input {
     display: none !important;
   }
@@ -733,12 +825,12 @@ select.products__table-select.is-editable,
   }
 
   .products__detail .products__detail-form .products__detail-grid {
-    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
     margin: 0 !important;
     margin-bottom: 0 !important;
     padding: 1.25rem 1.25rem 0 1.25rem !important;
     padding-bottom: 0 !important;
-    row-gap: 0 !important;
+    row-gap: 1rem !important;
     column-gap: 1.25rem !important;
   }
 

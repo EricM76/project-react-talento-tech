@@ -16,6 +16,8 @@ export const ProductsUI = ({
   sectionOptions,
   brandOptions,
   statusOptions,
+  categoriesData,
+  getSubcategoryOptions,
   formatCurrency,
   formatDiscount,
   formatStock,
@@ -73,7 +75,7 @@ export const ProductsUI = ({
                 <input type="text" value={product.section || 'Sin sección'} readOnly />
               )}
             </label>
-            <label className="products__detail-field products__detail-field--full">
+            <label className="products__detail-field">
               <span>Categoría</span>
               {isEditing ? (
                 <select
@@ -89,6 +91,31 @@ export const ProductsUI = ({
                 </select>
               ) : (
                 <input type="text" value={product.category || product.section || 'Sin categoría'} readOnly />
+              )}
+            </label>
+            <label className="products__detail-field">
+              <span>Subcategoría</span>
+              {isEditing ? (
+                <select
+                  value={currentValues.subcategory}
+                  onChange={(event) => handleFieldChange('subcategory', event.target.value)}
+                  disabled={!currentValues.category || getSubcategoryOptions(currentValues.category).length === 0}
+                >
+                  <option value="">
+                    {currentValues.category
+                      ? getSubcategoryOptions(currentValues.category).length === 0
+                        ? 'No hay subcategorías disponibles'
+                        : 'Seleccione una subcategoría'
+                      : 'Primero seleccione una categoría'}
+                  </option>
+                  {getSubcategoryOptions(currentValues.category).map((subcategory) => (
+                    <option key={subcategory} value={subcategory}>
+                      {subcategory}
+                    </option>
+                  ))}
+                </select>
+              ) : (
+                <input type="text" value={product.subcategory || 'Sin subcategoría'} readOnly />
               )}
             </label>
           </div>

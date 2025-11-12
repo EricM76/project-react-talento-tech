@@ -31,6 +31,7 @@ const createEditableValues = (product = {}) => ({
   discount: product.discount !== undefined && product.discount !== null ? String(product.discount) : '',
   category: product.category || product.section || '',
   section: product.section || '',
+  subcategory: product.subcategory || '',
   stock: product.stock !== undefined && product.stock !== null ? String(product.stock) : '',
   brand: product.brand || '',
   status: product.status || 'Activo',
@@ -47,6 +48,7 @@ export const ProductsContainer = () => {
   const [editingValues, setEditingValues] = useState(null)
   const [editingImagePreview, setEditingImagePreview] = useState(null)
   const [editingImageFile, setEditingImageFile] = useState(null)
+  const [categoriesData, setCategoriesData] = useState([])
   const fileInputRef = useRef(null)
 
   useEffect(() => {
@@ -65,6 +67,21 @@ export const ProductsContainer = () => {
     }
 
     fetchProducts()
+  }, [])
+
+  useEffect(() => {
+    // Cargar categorías para obtener subcategorías
+    const fetchCategories = async () => {
+      try {
+        const response = await fetch('/data/categories.json')
+        const data = await response.json()
+        setCategoriesData(data)
+      } catch (err) {
+        console.error('Error al cargar categorías:', err)
+      }
+    }
+
+    fetchCategories()
   }, [])
 
   const productsWithFallback = useMemo(
@@ -108,8 +125,22 @@ export const ProductsContainer = () => {
     return Array.from(values)
   }, [productsWithFallback])
 
+  const getSubcategoryOptions = (category) => {
+    if (!category || !categoriesData.length) return []
+    const selectedCategory = categoriesData.find((cat) => cat.name === category)
+    return selectedCategory && selectedCategory.sub ? selectedCategory.sub : []
+  }
+
   const handleFieldChange = (field, value) => {
-    setEditingValues((prev) => (prev ? { ...prev, [field]: value } : prev))
+    setEditingValues((prev) => {
+      if (!prev) return prev
+      const updated = { ...prev, [field]: value }
+      // Si cambia la categoría, limpiar la subcategoría
+      if (field === 'category') {
+        updated.subcategory = ''
+      }
+      return updated
+    })
   }
 
   const handleView = (product) => {
@@ -182,6 +213,7 @@ export const ProductsContainer = () => {
         discount: parseNumberValue(editingValues.discount, product.discount || 0),
         category: editingValues.category || editingValues.section || '',
         section: editingValues.section,
+        subcategory: editingValues.subcategory || '',
         stock: parseNumberValue(editingValues.stock, product.stock || 0),
         brand: editingValues.brand,
         status: editingValues.status || product.status || 'Activo',
@@ -305,6 +337,8 @@ export const ProductsContainer = () => {
       sectionOptions={sectionOptions}
       brandOptions={brandOptions}
       statusOptions={statusOptions}
+      categoriesData={categoriesData}
+      getSubcategoryOptions={getSubcategoryOptions}
       formatCurrency={formatCurrency}
       formatDiscount={formatDiscount}
       formatStock={formatStock}

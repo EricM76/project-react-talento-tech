@@ -23,11 +23,25 @@ const formatStock = (value) => {
 
 const FALLBACK_IMAGE = 'https://via.placeholder.com/280x180.png?text=Sin+imagen'
 
+const createEditableValues = (product = {}) => ({
+  name: product.name || '',
+  price: product.price !== undefined && product.price !== null ? String(product.price) : '',
+  discount: product.discount !== undefined && product.discount !== null ? String(product.discount) : '',
+  category: product.category || product.section || '',
+  section: product.section || '',
+  stock: product.stock !== undefined && product.stock !== null ? String(product.stock) : '',
+  brand: product.brand || '',
+  status: product.status || 'Activo',
+  description: product.description || ''
+})
+
 export const Products = () => {
   const [products, setProducts] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
   const [expandedProductId, setExpandedProductId] = useState(null)
+  const [editingProductId, setEditingProductId] = useState(null)
+  const [editingValues, setEditingValues] = useState(null)
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -55,7 +69,44 @@ export const Products = () => {
     [products]
   )
 
-  const renderProductDetailContent = (product) => {
+  const categoryOptions = useMemo(() => {
+    const values = new Set()
+    productsWithFallback.forEach((product) => {
+      if (product.category) values.add(product.category)
+      if (product.section) values.add(product.section)
+    })
+    return Array.from(values)
+  }, [productsWithFallback])
+
+  const sectionOptions = useMemo(() => {
+    const values = new Set()
+    productsWithFallback.forEach((product) => {
+      if (product.section) values.add(product.section)
+    })
+    return Array.from(values)
+  }, [productsWithFallback])
+
+  const brandOptions = useMemo(() => {
+    const values = new Set()
+    productsWithFallback.forEach((product) => {
+      if (product.brand) values.add(product.brand)
+    })
+    return Array.from(values)
+  }, [productsWithFallback])
+
+  const statusOptions = useMemo(() => {
+    const values = new Set(['Activo', 'Inactivo'])
+    productsWithFallback.forEach((product) => {
+      if (product.status) values.add(product.status)
+    })
+    return Array.from(values)
+  }, [productsWithFallback])
+
+  const handleFieldChange = (field, value) => {
+    setEditingValues((prev) => (prev ? { ...prev, [field]: value } : prev))
+  }
+
+  const renderProductDetailContent = (product, isEditing, currentValues) => {
     const detailImage = product.image || product.thumbnail || FALLBACK_IMAGE
 
     return (
@@ -63,41 +114,68 @@ export const Products = () => {
         <div className="products__detail-form">
           <div className="products__detail-grid">
             <label className="products__detail-field">
-              <span>Nombre</span>
-              <input type="text" value={product.name || ''} readOnly />
-            </label>
-            <label className="products__detail-field">
-              <span>Stock</span>
-              <input type="text" value={formatStock(product.stock)} readOnly />
-            </label>
-            <label className="products__detail-field">
               <span>Estado</span>
-              <input type="text" value={product.status || 'Activo'} readOnly />
-            </label>
-            <label className="products__detail-field">
-              <span>Precio</span>
-              <input type="text" value={formatCurrency(product.price)} readOnly />
-            </label>
-            <label className="products__detail-field">
-              <span>Descuento</span>
-              <input type="text" value={formatDiscount(product.discount)} readOnly />
+              {isEditing ? (
+                <select
+                  value={currentValues.status}
+                  onChange={(event) => handleFieldChange('status', event.target.value)}
+                >
+                  <option value="">Selecciona estado</option>
+                  {statusOptions.map((status) => (
+                    <option key={status} value={status}>
+                      {status}
+                    </option>
+                  ))}
+                </select>
+              ) : (
+                <input type="text" value={product.status || 'Activo'} readOnly />
+              )}
             </label>
             <label className="products__detail-field">
               <span>Sección</span>
-              <input type="text" value={product.section || 'Sin sección'} readOnly />
+              {isEditing ? (
+                <select
+                  value={currentValues.section}
+                  onChange={(event) => handleFieldChange('section', event.target.value)}
+                >
+                  <option value="">Sin sección</option>
+                  {sectionOptions.map((section) => (
+                    <option key={section} value={section}>
+                      {section}
+                    </option>
+                  ))}
+                </select>
+              ) : (
+                <input type="text" value={product.section || 'Sin sección'} readOnly />
+              )}
             </label>
             <label className="products__detail-field">
               <span>Marca</span>
-              <input type="text" value={product.brand || 'Sin marca'} readOnly />
-            </label>
-            <label className="products__detail-field">
-              <span>Categoría</span>
-              <input type="text" value={product.category || product.section || 'Sin categoría'} readOnly />
+              {isEditing ? (
+                <select
+                  value={currentValues.brand}
+                  onChange={(event) => handleFieldChange('brand', event.target.value)}
+                >
+                  <option value="">Sin marca</option>
+                  {brandOptions.map((brand) => (
+                    <option key={brand} value={brand}>
+                      {brand}
+                    </option>
+                  ))}
+                </select>
+              ) : (
+                <input type="text" value={product.brand || 'Sin marca'} readOnly />
+              )}
             </label>
           </div>
           <label className="products__detail-field products__detail-description">
             <span>Descripción</span>
-            <textarea value={product.description || 'Sin descripción'} readOnly rows={4} />
+            <textarea
+              value={isEditing ? currentValues.description : product.description || 'Sin descripción'}
+              readOnly={!isEditing}
+              rows={4}
+              onChange={(event) => isEditing && handleFieldChange('description', event.target.value)}
+            />
           </label>
         </div>
 
@@ -112,11 +190,54 @@ export const Products = () => {
   }
 
   const handleView = (product) => {
+    if (editingProductId === product.id) {
+      return
+    }
     setExpandedProductId((prev) => (prev === product.id ? null : product.id))
   }
 
   const handleEdit = (product) => {
-    console.log('Editar:', product)
+    setExpandedProductId(product.id)
+    setEditingProductId(product.id)
+    setEditingValues(createEditableValues(product))
+  }
+
+  const handleCancelEditing = () => {
+    setEditingProductId(null)
+    setEditingValues(null)
+  }
+
+  const parseNumberValue = (value, fallback = 0) => {
+    if (value === '' || value === null || value === undefined) {
+      return fallback
+    }
+    const numericValue = Number(value)
+    return Number.isNaN(numericValue) ? fallback : numericValue
+  }
+
+  const handleSave = (product) => {
+    if (!editingValues) {
+      return
+    }
+
+    const updatedProduct = {
+      ...product,
+      name: editingValues.name.trim(),
+      price: parseNumberValue(editingValues.price, product.price || 0),
+      discount: parseNumberValue(editingValues.discount, product.discount || 0),
+      category: editingValues.category || editingValues.section || '',
+      section: editingValues.section,
+      stock: parseNumberValue(editingValues.stock, product.stock || 0),
+      brand: editingValues.brand,
+      status: editingValues.status || product.status || 'Activo',
+      description: editingValues.description
+    }
+
+    setProducts((prevProducts) =>
+      prevProducts.map((item) => (item.id === product.id ? updatedProduct : item))
+    )
+    setEditingProductId(null)
+    setEditingValues(null)
   }
 
   const handleDelete = (product) => {
@@ -166,90 +287,141 @@ export const Products = () => {
               !error &&
               productsWithFallback.map((product) => {
                 const isExpanded = expandedProductId === product.id
+                const isEditing = editingProductId === product.id
+                const currentValues = isEditing
+                  ? editingValues || createEditableValues(product)
+                  : createEditableValues(product)
 
                 return (
                   <React.Fragment key={product.id}>
                     <tr>
                       <td className="products__name">
                         <input
-                          className="products__table-input"
+                          className={`products__table-input${isEditing ? ' is-editable' : ''}`}
                           type="text"
-                          value={product.name || 'Sin nombre'}
-                          readOnly
+                          value={isEditing ? currentValues.name : product.name || 'Sin nombre'}
+                          readOnly={!isEditing}
                           aria-label={`Nombre de ${product.name || 'producto'}`}
+                          onChange={(event) => isEditing && handleFieldChange('name', event.target.value)}
                         />
                       </td>
                       <td>
                         <input
-                          className="products__table-input"
-                          type="text"
-                          value={formatCurrency(product.price)}
-                          readOnly
+                          className={`products__table-input${isEditing ? ' is-editable' : ''}`}
+                          type={isEditing ? 'number' : 'text'}
+                          value={isEditing ? currentValues.price : formatCurrency(product.price)}
+                          readOnly={!isEditing}
                           aria-label={`Precio de ${product.name || 'producto'}`}
+                          onChange={(event) => isEditing && handleFieldChange('price', event.target.value)}
+                          min={isEditing ? '0' : undefined}
+                          step={isEditing ? '0.01' : undefined}
                         />
                       </td>
                       <td>
                         <input
-                          className="products__table-input"
-                          type="text"
-                          value={formatDiscount(product.discount)}
-                          readOnly
+                          className={`products__table-input${isEditing ? ' is-editable' : ''}`}
+                          type={isEditing ? 'number' : 'text'}
+                          value={isEditing ? currentValues.discount : formatDiscount(product.discount)}
+                          readOnly={!isEditing}
                           aria-label={`Descuento de ${product.name || 'producto'}`}
+                          onChange={(event) => isEditing && handleFieldChange('discount', event.target.value)}
+                          min={isEditing ? '0' : undefined}
+                          max={isEditing ? '100' : undefined}
+                          step={isEditing ? '1' : undefined}
                         />
                       </td>
                       <td>
-                        <input
-                          className="products__table-input"
-                          type="text"
-                          value={product.category || product.section || 'Sin categoría'}
-                          readOnly
-                          aria-label={`Categoría de ${product.name || 'producto'}`}
-                        />
+                        {isEditing ? (
+                          <select
+                            className="products__table-select is-editable"
+                            value={currentValues.category}
+                            onChange={(event) => handleFieldChange('category', event.target.value)}
+                            aria-label={`Categoría de ${product.name || 'producto'}`}
+                          >
+                            <option value="">Sin categoría</option>
+                            {categoryOptions.map((category) => (
+                              <option key={category} value={category}>
+                                {category}
+                              </option>
+                            ))}
+                          </select>
+                        ) : (
+                          <input
+                            className="products__table-input"
+                            type="text"
+                            value={product.category || product.section || 'Sin categoría'}
+                            readOnly
+                            aria-label={`Categoría de ${product.name || 'producto'}`}
+                          />
+                        )}
                       </td>
                       <td>
                         <input
-                          className="products__table-input"
-                          type="text"
-                          value={formatStock(product.stock)}
-                          readOnly
+                          className={`products__table-input${isEditing ? ' is-editable' : ''}`}
+                          type={isEditing ? 'number' : 'text'}
+                          value={isEditing ? currentValues.stock : formatStock(product.stock)}
+                          readOnly={!isEditing}
                           aria-label={`Stock de ${product.name || 'producto'}`}
+                          onChange={(event) => isEditing && handleFieldChange('stock', event.target.value)}
+                          min={isEditing ? '0' : undefined}
                         />
                       </td>
                       <td>
                         <div className="products__actions">
-                          <button
-                            type="button"
-                            className={`products__button products__button--secondary${isExpanded ? ' is-active' : ''}`}
-                            onClick={() => handleView(product)}
-                            aria-expanded={isExpanded}
-                            aria-controls={`product-detail-${product.id}`}
-                          >
-                            <i className={`fa-solid ${isExpanded ? 'fa-eye-slash' : 'fa-eye'}`} aria-hidden="true" />
-                            <span className="sr-only">Ver detalle</span>
-                          </button>
-                          <button
-                            type="button"
-                            className="products__button products__button--primary"
-                            onClick={() => handleEdit(product)}
-                          >
-                            <i className="fa-solid fa-pen-to-square" aria-hidden="true" />
-                            <span className="sr-only">Editar</span>
-                          </button>
-                          <button
-                            type="button"
-                            className="products__button products__button--danger"
-                            onClick={() => handleDelete(product)}
-                          >
-                            <i className="fa-solid fa-trash-can" aria-hidden="true" />
-                            <span className="sr-only">Eliminar</span>
-                          </button>
+                          {isEditing ? (
+                            <>
+                              <button
+                                type="button"
+                                className="products__button products__button--primary"
+                                onClick={() => handleSave(product)}
+                              >
+                                Guardar
+                              </button>
+                              <button
+                                type="button"
+                                className="products__button products__button--secondary"
+                                onClick={handleCancelEditing}
+                              >
+                                Cancelar
+                              </button>
+                            </>
+                          ) : (
+                            <>
+                              <button
+                                type="button"
+                                className={`products__button products__button--secondary${isExpanded ? ' is-active' : ''}`}
+                                onClick={() => handleView(product)}
+                                aria-expanded={isExpanded}
+                                aria-controls={`product-detail-${product.id}`}
+                              >
+                                <i className={`fa-solid ${isExpanded ? 'fa-eye-slash' : 'fa-eye'}`} aria-hidden="true" />
+                                <span className="sr-only">Ver detalle</span>
+                              </button>
+                              <button
+                                type="button"
+                                className="products__button products__button--primary"
+                                onClick={() => handleEdit(product)}
+                              >
+                                <i className="fa-solid fa-pen-to-square" aria-hidden="true" />
+                                <span className="sr-only">Editar</span>
+                              </button>
+                              <button
+                                type="button"
+                                className="products__button products__button--danger"
+                                onClick={() => handleDelete(product)}
+                              >
+                                <i className="fa-solid fa-trash-can" aria-hidden="true" />
+                                <span className="sr-only">Eliminar</span>
+                              </button>
+                            </>
+                          )}
                         </div>
                       </td>
                     </tr>
                     {isExpanded && (
                       <tr className="products__detail-row" id={`product-detail-${product.id}`}>
                         <td colSpan={6}>
-                          {renderProductDetailContent(product)}
+                          {renderProductDetailContent(product, isEditing, currentValues)}
                         </td>
                       </tr>
                     )}
@@ -271,66 +443,95 @@ export const Products = () => {
           !error &&
           productsWithFallback.map((product) => {
             const isExpanded = expandedProductId === product.id
+            const isEditing = editingProductId === product.id
+            const currentValues = isEditing
+              ? editingValues || createEditableValues(product)
+              : createEditableValues(product)
 
             return (
               <article key={product.id} className={`products__card${isExpanded ? ' is-expanded' : ''}`}>
                 <header className="products__card-header">
                   <div>
-                    <h3 className="products__card-title">{product.name}</h3>
-                    {product.section && <span className="products__card-subtitle">{product.section}</span>}
+                    <h3 className="products__card-title">{isEditing ? currentValues.name || 'Sin nombre' : product.name}</h3>
+                    {(isEditing ? currentValues.section : product.section) && (
+                      <span className="products__card-subtitle">
+                        {isEditing ? currentValues.section : product.section}
+                      </span>
+                    )}
                   </div>
                   <div className="products__card-actions">
-                    <button
-                      type="button"
-                      className={`products__button products__button--secondary${isExpanded ? ' is-active' : ''}`}
-                      onClick={() => handleView(product)}
-                      aria-expanded={isExpanded}
-                      aria-controls={`product-detail-${product.id}-card`}
-                    >
-                      <i className={`fa-solid ${isExpanded ? 'fa-eye-slash' : 'fa-eye'}`} aria-hidden="true" />
-                      <span className="sr-only">Ver detalle</span>
-                    </button>
-                    <button
-                      type="button"
-                      className="products__button products__button--primary"
-                      onClick={() => handleEdit(product)}
-                    >
-                      <i className="fa-solid fa-pen-to-square" aria-hidden="true" />
-                      <span className="sr-only">Editar</span>
-                    </button>
-                    <button
-                      type="button"
-                      className="products__button products__button--danger"
-                      onClick={() => handleDelete(product)}
-                    >
-                      <i className="fa-solid fa-trash-can" aria-hidden="true" />
-                      <span className="sr-only">Eliminar</span>
-                    </button>
+                    {isEditing ? (
+                      <>
+                        <button
+                          type="button"
+                          className="products__button products__button--primary"
+                          onClick={() => handleSave(product)}
+                        >
+                          Guardar
+                        </button>
+                        <button
+                          type="button"
+                          className="products__button products__button--secondary"
+                          onClick={handleCancelEditing}
+                        >
+                          Cancelar
+                        </button>
+                      </>
+                    ) : (
+                      <>
+                        <button
+                          type="button"
+                          className={`products__button products__button--secondary${isExpanded ? ' is-active' : ''}`}
+                          onClick={() => handleView(product)}
+                          aria-expanded={isExpanded}
+                          aria-controls={`product-detail-${product.id}-card`}
+                        >
+                          <i className={`fa-solid ${isExpanded ? 'fa-eye-slash' : 'fa-eye'}`} aria-hidden="true" />
+                          <span className="sr-only">Ver detalle</span>
+                        </button>
+                        <button
+                          type="button"
+                          className="products__button products__button--primary"
+                          onClick={() => handleEdit(product)}
+                        >
+                          <i className="fa-solid fa-pen-to-square" aria-hidden="true" />
+                          <span className="sr-only">Editar</span>
+                        </button>
+                        <button
+                          type="button"
+                          className="products__button products__button--danger"
+                          onClick={() => handleDelete(product)}
+                        >
+                          <i className="fa-solid fa-trash-can" aria-hidden="true" />
+                          <span className="sr-only">Eliminar</span>
+                        </button>
+                      </>
+                    )}
                   </div>
                 </header>
 
                 <div className="products__card-summary">
                   <div>
                     <span>Precio</span>
-                    <strong>{formatCurrency(product.price)}</strong>
+                    <strong>{isEditing ? currentValues.price || '0' : formatCurrency(product.price)}</strong>
                   </div>
                   <div>
                     <span>Descuento</span>
-                    <strong>{formatDiscount(product.discount)}</strong>
+                    <strong>{isEditing ? `${currentValues.discount || 0}%` : formatDiscount(product.discount)}</strong>
                   </div>
                   <div>
                     <span>Categoría</span>
-                    <strong>{product.category || product.section || 'Sin categoría'}</strong>
+                    <strong>{isEditing ? currentValues.category || 'Sin categoría' : product.category || product.section || 'Sin categoría'}</strong>
                   </div>
                   <div>
                     <span>Stock</span>
-                    <strong>{formatStock(product.stock)}</strong>
+                    <strong>{isEditing ? currentValues.stock || '0' : formatStock(product.stock)}</strong>
                   </div>
                 </div>
 
                 {isExpanded && (
                   <div className="products__card-detail" id={`product-detail-${product.id}-card`}>
-                    {renderProductDetailContent(product)}
+                    {renderProductDetailContent(product, isEditing, currentValues)}
                   </div>
                 )}
               </article>

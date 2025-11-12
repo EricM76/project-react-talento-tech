@@ -172,6 +172,9 @@ export const Products = () => {
               )}
             </label>
           </div>
+        </div>
+
+        <div className="products__detail-bottom">
           <label className="products__detail-field products__detail-description">
             <span>Descripción</span>
             <textarea
@@ -181,9 +184,8 @@ export const Products = () => {
               onChange={(event) => isEditing && handleFieldChange('description', event.target.value)}
             />
           </label>
-        </div>
 
-        <div className="products__detail-media">
+          <div className="products__detail-media">
           <figure className="products__image-wrapper">
             <img src={displayedImage} alt={`Imagen de ${product.name}`} />
             {isEditing && (
@@ -210,6 +212,7 @@ export const Products = () => {
           {isEditing && editingImageFile && (
             <p className="products__image-hint">La nueva imagen se aplicará al guardar los cambios.</p>
           )}
+          </div>
         </div>
       </div>
     )

@@ -66,7 +66,6 @@ export const Products = () => {
               <span>Nombre</span>
               <input type="text" value={product.name || ''} readOnly />
             </label>
-          <div className="products__detail-inline">
             <label className="products__detail-field">
               <span>Stock</span>
               <input type="text" value={formatStock(product.stock)} readOnly />
@@ -75,8 +74,6 @@ export const Products = () => {
               <span>Estado</span>
               <input type="text" value={product.status || 'Activo'} readOnly />
             </label>
-          </div>
-          <div className="products__detail-inline">
             <label className="products__detail-field">
               <span>Precio</span>
               <input type="text" value={formatCurrency(product.price)} readOnly />
@@ -89,8 +86,6 @@ export const Products = () => {
               <span>Sección</span>
               <input type="text" value={product.section || 'Sin sección'} readOnly />
             </label>
-          </div>
-          <div className="products__detail-inline">
             <label className="products__detail-field">
               <span>Marca</span>
               <input type="text" value={product.brand || 'Sin marca'} readOnly />
@@ -99,7 +94,6 @@ export const Products = () => {
               <span>Categoría</span>
               <input type="text" value={product.category || product.section || 'Sin categoría'} readOnly />
             </label>
-          </div>
           </div>
           <label className="products__detail-field products__detail-description">
             <span>Descripción</span>
@@ -176,11 +170,51 @@ export const Products = () => {
                 return (
                   <React.Fragment key={product.id}>
                     <tr>
-                      <td className="products__name">{product.name}</td>
-                      <td>{formatCurrency(product.price)}</td>
-                      <td>{formatDiscount(product.discount)}</td>
-                      <td>{product.category || product.section || 'Sin categoría'}</td>
-                      <td>{formatStock(product.stock)}</td>
+                      <td className="products__name">
+                        <input
+                          className="products__table-input"
+                          type="text"
+                          value={product.name || 'Sin nombre'}
+                          readOnly
+                          aria-label={`Nombre de ${product.name || 'producto'}`}
+                        />
+                      </td>
+                      <td>
+                        <input
+                          className="products__table-input"
+                          type="text"
+                          value={formatCurrency(product.price)}
+                          readOnly
+                          aria-label={`Precio de ${product.name || 'producto'}`}
+                        />
+                      </td>
+                      <td>
+                        <input
+                          className="products__table-input"
+                          type="text"
+                          value={formatDiscount(product.discount)}
+                          readOnly
+                          aria-label={`Descuento de ${product.name || 'producto'}`}
+                        />
+                      </td>
+                      <td>
+                        <input
+                          className="products__table-input"
+                          type="text"
+                          value={product.category || product.section || 'Sin categoría'}
+                          readOnly
+                          aria-label={`Categoría de ${product.name || 'producto'}`}
+                        />
+                      </td>
+                      <td>
+                        <input
+                          className="products__table-input"
+                          type="text"
+                          value={formatStock(product.stock)}
+                          readOnly
+                          aria-label={`Stock de ${product.name || 'producto'}`}
+                        />
+                      </td>
                       <td>
                         <div className="products__actions">
                           <button

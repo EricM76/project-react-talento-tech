@@ -1,7 +1,6 @@
 import React from 'react'
 import './Dashboard.css'
 import { useOutletContext } from 'react-router-dom'
-import { Products as ProductsTable } from '../Products/Products'
 
 const summaryData = [
   {
@@ -141,13 +140,6 @@ export const Dashboard = () => {
               <span className='chart-badge neutral'>Moda lidera crecimiento</span>
             </footer>
           </article>
-        </div>
-      </section>
-
-      <section className='dashboard-section' id='productos'>
-        <h2 className='section-title'>Listado de productos</h2>
-        <div className='dashboard-products-table'>
-          <ProductsTable />
         </div>
       </section>
 

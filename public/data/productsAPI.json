@@ -8,7 +8,10 @@
     "brand": "Moulinex",
     "description": "Cafetera Dolce Gusto Lumio. La cafetera Dolce Gusto Lumio es de variedad automática que ha llegado con un diseño radical al que nos tenía acostumbrados Dolce Gusto.En este post te contamos todo lo que necesitas saber sobre ella, desde sus características técnicas hasta la calidad de las cápsulas o price.",
     "image": "https://i.ibb.co/ymZPTZsC/img-cafetera-moulinex.jpg",
-    "category": "Hogar - Muebles - Jardín"
+    "category": "Hogar - Muebles - Jardín",
+    "stock": 10,
+    "status": "Activo",
+    "subcategory": "Electrodomésticos"
   },
   {
     "id": "6909ed20b4b00e47c80338ed",
@@ -19,7 +22,10 @@
     "brand": "Apple",
     "description": "Macbook Pro 2019 Mpxq2ll/a Intel Core i5 2.3 Ghz 8gb RAM 128gb SSD Pantalla 13.3\" Retina Apple Nueva Original. Importada de USA. Se entrega con la factura de compra para contar con la garantía del fabricante",
     "image": "https://i.ibb.co/TqWbWc54/img-macbook-pro-2019.jpg",
-    "category": "Electrónica"
+    "category": "Electrónica",
+    "stock": 5,
+    "status": "Activo",
+    "subcategory": "Notebooks"
   },
   {
     "id": "6909ed20b4b00e47c80338ee",
@@ -30,7 +36,10 @@
     "brand": "Samsung",
     "description": "Experiencia visual excepcional. Mirá tus series y películas favoritas con la mejor definición.Tendrás colores brillantes y detalles precisos en todos tus contenidos.Disfrutá aún más del mejor entretenimiento gracias a su vasta pantalla y ángulos de visión amplios.",
     "image": "https://i.ibb.co/TDNX2MjD/img-samsung-galaxy-s10.jpg",
-    "category": "Teléfonos - Tablets"
+    "category": "Teléfonos - Tablets",
+    "stock": 20,
+    "status": "Activo",
+    "subcategory": "Celulares - Teléfonos"
   },
   {
     "id": "6909ed20b4b00e47c80338ef",
@@ -41,7 +50,10 @@
     "image": "https://i.ibb.co/hFw7fNdW/img-heladera-whirpool.jpg",
     "section": "in-sale",
     "brand": "Whirlpool",
-    "category": "Hogar - Muebles - Jardín"
+    "category": "Hogar - Muebles - Jardín",
+    "stock": 4,
+    "status": "Activo",
+    "subcategory": "Electrodomésticos"
   },
   {
     "id": "6909ed20b4b00e47c80338f0",
@@ -52,7 +64,10 @@
     "image": "https://i.ibb.co/DsYGdXJ/img-camara-nikon.jpg",
     "section": "in-sale",
     "brand": "Nikon",
-    "category": "Electrónica"
+    "category": "Electrónica",
+    "stock": 6,
+    "status": "Activo",
+    "subcategory": "Camaras"
   },
   {
     "id": "6909ed20b4b00e47c80338f1",
@@ -63,7 +78,10 @@
     "image": "https://i.ibb.co/cShHDn7F/img-aire-acondicionado.jpg",
     "section": "in-sale",
     "brand": "TCL",
-    "category": "Hogar - Muebles - Jardín"
+    "category": "Hogar - Muebles - Jardín",
+    "stock": 12,
+    "status": "Activo",
+    "subcategory": "Electrodomésticos"
   },
   {
     "id": "6909ed20b4b00e47c80338f2",
@@ -74,7 +92,10 @@
     "image": "https://i.ibb.co/rPT2ZGJ/img-laptop-lenovo.jpg",
     "section": "in-sale",
     "brand": "Lenovo",
-    "category": "Electrónica"
+    "category": "Electrónica",
+    "stock": 8,
+    "status": "Activo",
+    "subcategory": "Notebooks"
   },
   {
     "id": "6909ed20b4b00e47c80338f3",
@@ -85,7 +106,10 @@
     "image": "https://i.ibb.co/nGSBvfV/img-iphone-11.jpg",
     "section": "in-sale",
     "brand": "Apple",
-    "category": "Teléfonos - Tablets"
+    "category": "Teléfonos - Tablets",
+    "stock": 7,
+    "status": "Activo",
+    "subcategory": "Celulares - Teléfonos"
   },
   {
     "id": "6909ed20b4b00e47c80338f4",
@@ -96,7 +120,10 @@
     "image": "https://i.ibb.co/BVDk3GTb/img-apple-magic-keyboard.jpg",
     "section": "visited",
     "brand": "Apple",
-    "category": "Electrónica"
+    "category": "Electrónica",
+    "stock": 4,
+    "status": "Activo",
+    "subcategory": "Computadoras de Escritorio"
   },
   {
     "id": "6909ed20b4b00e47c80338f5",
@@ -107,7 +134,10 @@
     "image": "https://i.ibb.co/NndmRYLs/img-mouse-logitech.jpg",
     "section": "visited",
     "brand": "Logitech",
-    "category": "Electrónica"
+    "category": "Electrónica",
+    "stock": 4,
+    "status": "Activo",
+    "subcategory": "Computadoras de Escritorio"
   },
   {
     "id": "6909ed20b4b00e47c80338f6",
@@ -118,7 +148,10 @@
     "image": "https://i.ibb.co/TxYbQWT5/img-parlante-bose.jpg",
     "section": "visited",
     "brand": "Bose",
-    "category": "Electrónica"
+    "category": "Electrónica",
+    "stock": 10,
+    "status": "Activo",
+    "subcategory": "Audio"
   },
   {
     "id": "6909ed20b4b00e47c80338f7",
@@ -129,7 +162,10 @@
     "image": "https://i.ibb.co/bj2RrV9H/img-home-theater-sony.jpg",
     "section": "visited",
     "brand": "Sony",
-    "category": "Electrónica"
+    "category": "Electrónica",
+    "stock": 4,
+    "status": "Activo",
+    "subcategory": "Audio"
   },
   {
     "id": "6909ed20b4b00e47c80338f8",
@@ -140,18 +176,24 @@
     "image": "https://i.ibb.co/M5kjpdrz/img-tv-samsung-smart.jpg",
     "section": "visited",
     "brand": "Samsung",
-    "category": "Electrónica"
+    "category": "Electrónica",
+    "stock": 20,
+    "status": "Activo",
+    "subcategory": "TV"
   },
   {
     "id": "6909ed20b4b00e47c80338f9",
-    "name": "Sony S6700 Reproductor De Blu-ray ",
+    "name": "Sony S6700 Reproductor De Blu-ray",
     "description": "Disfruta de tus películas favoritas con hasta cuatro veces más detalles que Full HD, gracias a la conversión de señales 4K. Cuando se conecta a un televisor compatible,un procesador de video avanzado convierte el video estándar en una señal cercana a la resolución 4K (3840 x 2160). Con ocho millones de píxeles, obtendrás imágenes más nítidas y detalladas, y la mayor calidad de la image te permite sentarte más cerca de la pantalla para que te sientas como en el cine.",
     "price": 10999,
     "discount": 10,
     "image": "https://i.ibb.co/LzrW9CZ6/img-sony-blueray.jpg",
     "section": "visited",
     "brand": "Sony",
-    "category": "Electrónica"
+    "category": "Electrónica",
+    "stock": 2,
+    "status": "Activo",
+    "subcategory": "Video"
   },
   {
     "id": "6909ed20b4b00e47c80338fa",
@@ -162,7 +204,10 @@
     "image": "https://i.ibb.co/rWTnnVR/img-bicicleta-fierce.jpg",
     "section": "visited",
     "brand": "Fierce",
-    "category": "Deportes - Bicicletas"
+    "category": "Deportes - Bicicletas",
+    "stock": 13,
+    "status": "Activo",
+    "subcategory": "Bicicletas - Ciclismo"
   },
   {
     "id": "6909ed20b4b00e47c80338fb",
@@ -173,6 +218,9 @@
     "brand": "Sony",
     "description": "Deja que la música dance cobre vida con EXTRA BASS™ Anima el ambiente con EXTRA BASS™1. Un radiador pasivo trabaja con el parlante monoaural para potenciar los tonos bajos y mejorar los graves, a pesar del tamaño compacto. ",
     "image": "https://i.ibb.co/9kTbS4Vk/img-parlante-sony.jpg",
-    "category": "Electrónica"
+    "category": "Electrónica",
+    "stock": 14,
+    "status": "Activo",
+    "subcategory": "Audio"
   }
 ]

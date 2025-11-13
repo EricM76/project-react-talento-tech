@@ -171,7 +171,7 @@ const register = async (userData) => {
       email: email.toLowerCase().trim(),
       password: password,
       token: null,
-      role: 'user',
+      role: userData.role || 'user',
       active: true
     }
 

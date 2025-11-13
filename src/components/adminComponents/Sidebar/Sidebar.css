@@ -56,6 +56,29 @@
   display: flex;
   align-items: center;
   gap: 0.4rem;
+  padding: 0.25rem;
+  border-radius: 8px;
+  transition: background-color 0.2s ease;
+  position: relative;
+}
+
+.sidebar-item:hover {
+  background-color: rgba(59, 130, 246, 0.1);
+}
+
+/* Cuando se hace hover en la fila, el botón también queda transparente */
+.sidebar-item:hover .sidebar-action-button {
+  background-color: rgba(255, 255, 255, 0.15) !important;
+  border: none !important;
+}
+
+.sidebar-item:hover .sidebar-action-button:hover {
+  background-color: rgba(255, 255, 255, 0.25) !important;
+}
+
+/* Cuando el link está activo, toda la fila tiene transparencia blanca */
+.sidebar-item:has(.sidebar-link.is-active) {
+  background-color: rgba(255, 255, 255, 0.15);
 }
 
 .sidebar-link {
@@ -65,16 +88,18 @@
   padding: 0.45rem 0.6rem;
   border-radius: 8px;
   transition: background-color 0.2s ease, color 0.2s ease;
+  flex: 1;
 }
 
 .sidebar-link:hover {
-  background-color: rgba(59, 130, 246, 0.2);
+  background-color: transparent;
   color: #ffffff;
 }
 
 .sidebar-link.is-active {
-  background-color: rgba(59, 130, 246, 0.35);
+  background-color: transparent;
   color: #ffffff;
+  font-weight: 500;
 }
 
 .sidebar-action-button {
@@ -86,7 +111,7 @@
   height: 28px;
   border-radius: 8px;
   cursor: pointer;
-  transition: background-color 0.2s ease, color 0.2s ease;
+  transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
   margin-left: auto;
   display: inline-flex;
   align-items: center;
@@ -96,6 +121,17 @@
 .sidebar-action-button:hover {
   background-color: rgba(59, 130, 246, 0.35);
   color: #ffffff;
+}
+
+/* Cuando la fila está activa, el botón también tiene transparencia */
+.sidebar-item:has(.sidebar-link.is-active) .sidebar-action-button {
+  background-color: rgba(255, 255, 255, 0.2);
+  border: none;
+  color: #ffffff;
+}
+
+.sidebar-item:has(.sidebar-link.is-active) .sidebar-action-button:hover {
+  background-color: rgba(255, 255, 255, 0.3);
 }
 
 .sidebar-footer {

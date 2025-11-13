@@ -33,8 +33,8 @@
     "id": 4,
     "name": "Ana",
     "surname": "Martínez",
-    "email": "ana.martinez@gmail.com",
-    "password": "password012",
+    "email": "inactive@gmail.com",
+    "password": "1234",
     "token": null,
     "role": "user",
     "active": false

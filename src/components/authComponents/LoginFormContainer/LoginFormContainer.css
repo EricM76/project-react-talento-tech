@@ -11,3 +11,23 @@
   }
 }
 
+/* Estilos para SweetAlert2 toast notifications */
+.swal2-toast.swal2-icon-error,
+.swal2-toast-large {
+  font-size: 1.6rem;
+  min-width: 350px;
+}
+
+.swal2-toast.swal2-icon-error .swal2-title,
+.swal2-toast-title-large {
+  font-size: 1.8rem !important;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+}
+
+.swal2-toast.swal2-icon-error .swal2-content,
+.swal2-toast-content-large {
+  font-size: 1.6rem !important;
+  line-height: 1.5;
+}
+

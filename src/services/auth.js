@@ -31,11 +31,22 @@ const login = async (email, password) => {
   try {
     const users = await loadUsers()
     const user = users.find(
-      (u) => u.email.toLowerCase() === email.toLowerCase() && u.password === password && u.active
+      (u) => u.email.toLowerCase() === email.toLowerCase()
     )
 
+    // Si el usuario no existe, lanzar error de credenciales
     if (!user) {
-      throw new Error('Credenciales inválidas o usuario inactivo')
+      throw new Error('Credenciales inválidas')
+    }
+
+    // Verificar primero si el usuario está activo
+    if (!user.active) {
+      throw new Error('Su cuenta ha sido bloqueada. Comuníquese con el administrador del sitio')
+    }
+
+    // Verificar la contraseña
+    if (user.password !== password) {
+      throw new Error('Credenciales inválidas')
     }
 
     // Retornar usuario sin la contraseña
@@ -96,7 +107,7 @@ const recoverPassword = async (email) => {
 const updatePassword = async (recoveryToken, newPassword) => {
   try {
     // Validar nueva contraseña
-    if (!newPassword || newPassword.length < 6) {
+    if (!newPassword || newPassword.length < 4) {
       throw new Error('La contraseña debe tener al menos 6 caracteres')
     }
 
@@ -131,7 +142,7 @@ const register = async (userData) => {
       throw new Error('Todos los campos son requeridos')
     }
 
-    if (password.length < 6) {
+    if (password.length < 4) {
       throw new Error('La contraseña debe tener al menos 6 caracteres')
     }
 

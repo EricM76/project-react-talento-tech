@@ -3,6 +3,8 @@ import './LoginFormContainer.css'
 import { LoginFormUI } from '../LoginFormUI'
 import { useNavigate } from 'react-router-dom'
 import { AuthContext } from '../../../context/AuthContext'
+import { login } from '../../../services/auth'
+import Swal from 'sweetalert2'
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
@@ -18,7 +20,7 @@ const validateCredentials = (credentials) => {
 
   if (!password.trim()) {
     errors.password = 'Ingresá tu contraseña.'
-  } else if (password.trim().length < 6) {
+  } else if (password.trim().length < 4) {
     errors.password = 'La contraseña debe tener al menos 6 caracteres.'
   }
 
@@ -94,16 +96,50 @@ export const LoginFormContainer = () => {
     setLoading(true)
 
     try {
-      await new Promise((resolve) => setTimeout(resolve, 800))
+      const { user } = await login(credentials.email, credentials.password)
+      
+      // Guardar datos de autenticación
       setAuth({
-        email: credentials.email,
+        ...user,
         remember: credentials.remember
       })
+
+      // Si el usuario quiere que se le recuerde, guardar en localStorage
+      if (credentials.remember) {
+        localStorage.setItem('auth', JSON.stringify({
+          ...user,
+          remember: true
+        }))
+      } else {
+        // Si no quiere recordar, solo guardar en sessionStorage
+        sessionStorage.setItem('auth', JSON.stringify(user))
+        localStorage.removeItem('auth')
+      }
+
       navigate('/admin/dashboard')
     } catch (error) {
-      setErrors({
-        general:
-          error?.message ?? 'Ocurrió un error al iniciar sesión. Intentalo nuevamente.'
+      // Manejar errores específicos del servicio de autenticación
+      const errorMessage = error?.message || 'Ocurrió un error al iniciar sesión. Intentalo nuevamente.'
+      
+      // Mostrar error con SweetAlert2 como toast en la esquina superior derecha
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: errorMessage,
+        toast: true,
+        position: 'top-end',
+        showConfirmButton: false,
+        timer: 5000,
+        timerProgressBar: true,
+        customClass: {
+          popup: 'swal2-toast-large',
+          title: 'swal2-toast-title-large',
+          content: 'swal2-toast-content-large'
+        },
+        didOpen: (toast) => {
+          toast.addEventListener('mouseenter', Swal.stopTimer)
+          toast.addEventListener('mouseleave', Swal.resumeTimer)
+        }
       })
     } finally {
       setLoading(false)

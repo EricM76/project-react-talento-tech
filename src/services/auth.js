@@ -1,50 +1,3 @@
-import jwt from 'jsonwebtoken'
-
-// Clave secreta para firmar los tokens (en producción, usar variable de entorno)
-const JWT_SECRET = process.env.VITE_JWT_SECRET || 'your-secret-key-change-in-production'
-const JWT_RECOVERY_SECRET = process.env.VITE_JWT_RECOVERY_SECRET || 'recovery-secret-key-change-in-production'
-
-/**
- * Genera un token JWT
- * @param {Object} payload - Datos a incluir en el token
- * @param {string} secret - Clave secreta para firmar
- * @param {string} expiresIn - Tiempo de expiración (ej: '24h', '1h')
- * @returns {string} Token JWT
- */
-const generateToken = (payload, secret = JWT_SECRET, expiresIn = '24h') => {
-  return jwt.sign(payload, secret, { expiresIn })
-}
-
-/**
- * Verifica y decodifica un token JWT
- * @param {string} token - Token JWT a verificar
- * @param {string} secret - Clave secreta para verificar
- * @returns {Object|null} Datos del token o null si es inválido
- */
-const verifyToken = (token, secret = JWT_SECRET) => {
-  try {
-    if (!token) return null
-    return jwt.verify(token, secret)
-  } catch (error) {
-    // Token inválido o expirado
-    return null
-  }
-}
-
-/**
- * Decodifica un token sin verificar (solo para lectura)
- * @param {string} token - Token JWT
- * @returns {Object|null} Datos del token o null si es inválido
- */
-const decodeToken = (token) => {
-  try {
-    if (!token) return null
-    return jwt.decode(token)
-  } catch (error) {
-    return null
-  }
-}
-
 // Cargar usuarios desde el JSON
 const loadUsers = async () => {
   try {
@@ -72,7 +25,7 @@ const saveUsers = async (users) => {
  * Autentica un usuario con email y contraseña
  * @param {string} email - Email del usuario
  * @param {string} password - Contraseña del usuario
- * @returns {Promise<{user: Object, token: string}>} Usuario autenticado y token JWT
+ * @returns {Promise<{user: Object}>} Usuario autenticado (el token será generado por el backend)
  */
 const login = async (email, password) => {
   try {
@@ -85,29 +38,11 @@ const login = async (email, password) => {
       throw new Error('Credenciales inválidas o usuario inactivo')
     }
 
-    // Generar token JWT con los datos del usuario
-    const tokenPayload = {
-      id: user.id,
-      email: user.email,
-      role: user.role,
-      name: user.name,
-      surname: user.surname
-    }
-
-    const token = generateToken(tokenPayload, JWT_SECRET, '24h')
-
-    // Actualizar el token del usuario en la lista
-    const updatedUsers = users.map((u) =>
-      u.id === user.id ? { ...u, token } : u
-    )
-
-    await saveUsers(updatedUsers)
-
     // Retornar usuario sin la contraseña
+    // El token será generado y retornado por el backend
     const { password: _, ...userWithoutPassword } = user
     return {
-      user: { ...userWithoutPassword, token },
-      token
+      user: userWithoutPassword
     }
   } catch (error) {
     console.error('Login error:', error)
@@ -116,9 +51,9 @@ const login = async (email, password) => {
 }
 
 /**
- * Genera un token de recuperación de contraseña
+ * Solicita la recuperación de contraseña
  * @param {string} email - Email del usuario
- * @returns {Promise<{token: string, user: Object}>} Token de recuperación y datos del usuario
+ * @returns {Promise<{user: Object, message: string}>} Datos del usuario y mensaje
  */
 const recoverPassword = async (email) => {
   try {
@@ -134,22 +69,11 @@ const recoverPassword = async (email) => {
       throw new Error('El usuario está inactivo')
     }
 
-    // Generar token de recuperación (expira en 1 hora)
-    const recoveryTokenPayload = {
-      id: user.id,
-      email: user.email,
-      type: 'password_recovery',
-      purpose: 'reset_password'
-    }
-
-    const recoveryToken = generateToken(recoveryTokenPayload, JWT_RECOVERY_SECRET, '1h')
-
-    // Aquí se debería enviar el token por email
-    // Por ahora solo lo retornamos
-    // TODO: Implementar envío de email con el token
+    // El token de recuperación será generado por el backend
+    // Aquí solo retornamos los datos del usuario para que el backend genere el token
+    // TODO: El backend debería enviar el token por email
 
     return {
-      token: recoveryToken,
       user: {
         id: user.id,
         email: user.email,
@@ -164,10 +88,10 @@ const recoverPassword = async (email) => {
 }
 
 /**
- * Actualiza la contraseña de un usuario usando un token de recuperación
- * @param {string} recoveryToken - Token de recuperación
+ * Actualiza la contraseña de un usuario
+ * @param {string} recoveryToken - Token de recuperación (será verificado por el backend)
  * @param {string} newPassword - Nueva contraseña
- * @returns {Promise<{user: Object}>} Usuario actualizado
+ * @returns {Promise<{user: Object, message: string}>} Usuario actualizado
  */
 const updatePassword = async (recoveryToken, newPassword) => {
   try {
@@ -176,33 +100,11 @@ const updatePassword = async (recoveryToken, newPassword) => {
       throw new Error('La contraseña debe tener al menos 6 caracteres')
     }
 
-    // Verificar y decodificar token de recuperación
-    const tokenData = verifyToken(recoveryToken, JWT_RECOVERY_SECRET)
-    if (!tokenData || tokenData.type !== 'password_recovery') {
-      throw new Error('Token de recuperación inválido o expirado')
-    }
+    // La verificación del token se hará en el backend
+    // Aquí solo validamos la contraseña
+    // El backend debería verificar el token y actualizar la contraseña
 
-    const users = await loadUsers()
-    const user = users.find((u) => u.id === tokenData.id && u.email === tokenData.email)
-
-    if (!user) {
-      throw new Error('Usuario no encontrado')
-    }
-
-    if (!user.active) {
-      throw new Error('El usuario está inactivo')
-    }
-
-    // Actualizar contraseña
-    const updatedUsers = users.map((u) =>
-      u.id === user.id ? { ...u, password: newPassword, token: null } : u
-    )
-
-    await saveUsers(updatedUsers)
-
-    const { password: _, ...userWithoutPassword } = user
     return {
-      user: { ...userWithoutPassword, password: newPassword },
       message: 'Contraseña actualizada correctamente'
     }
   } catch (error) {
@@ -218,7 +120,7 @@ const updatePassword = async (recoveryToken, newPassword) => {
  * @param {string} userData.surname - Apellido del usuario
  * @param {string} userData.email - Email del usuario
  * @param {string} userData.password - Contraseña del usuario
- * @returns {Promise<{user: Object}>} Usuario registrado
+ * @returns {Promise<{user: Object, message: string}>} Usuario registrado
  */
 const register = async (userData) => {
   try {
@@ -267,6 +169,7 @@ const register = async (userData) => {
     await saveUsers(updatedUsers)
 
     // Retornar usuario sin contraseña
+    // El token será generado por el backend después del registro
     const { password: _, ...userWithoutPassword } = newUser
     return {
       user: userWithoutPassword,
@@ -276,15 +179,6 @@ const register = async (userData) => {
     console.error('Register error:', error)
     throw error
   }
-}
-
-/**
- * Verifica un token JWT de sesión (wrapper para usar la función principal)
- * @param {string} token - Token JWT
- * @returns {Object|null} Datos del token o null si es inválido
- */
-const verifySessionToken = (token) => {
-  return verifyToken(token, JWT_SECRET)
 }
 
 /**
@@ -311,10 +205,6 @@ export {
   recoverPassword,
   updatePassword,
   register,
-  verifyToken,
-  verifySessionToken,
-  decodeToken,
   getUserById,
   loadUsers
 }
-

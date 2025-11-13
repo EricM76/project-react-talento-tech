@@ -1,13 +1,56 @@
-import React, { useEffect, useState } from 'react'
-import { getUsers, updateUserStatus, resetUserPassword } from '../../../services/users'
+import React, { useEffect, useState, useCallback } from 'react'
+import { getUsers, updateUserStatus, resetUserPassword, createUser } from '../../../services/users'
 import { UsersUI } from './UsersUI'
 import Swal from 'sweetalert2'
 
-export const UsersContainer = () => {
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+
+const validateUserData = (userData) => {
+  const { name, surname, email, password, role } = userData
+  const errors = {}
+
+  if (!name || !name.trim()) {
+    errors.name = 'El nombre es requerido'
+  }
+
+  if (!surname || !surname.trim()) {
+    errors.surname = 'El apellido es requerido'
+  }
+
+  if (!email || !email.trim()) {
+    errors.email = 'El correo electrónico es requerido'
+  } else if (!EMAIL_REGEX.test(email.trim())) {
+    errors.email = 'Ingresá un correo electrónico válido'
+  }
+
+  if (!password || !password.trim()) {
+    errors.password = 'La contraseña es requerida'
+  } else if (password.trim().length < 4) {
+    errors.password = 'La contraseña debe tener al menos 4 caracteres'
+  }
+
+  if (!role) {
+    errors.role = 'El rol es requerido'
+  }
+
+  return errors
+}
+
+export const UsersContainer = ({ onOpenModalRef }) => {
   const [users, setUsers] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
   const [processing, setProcessing] = useState(false)
+  const [showModal, setShowModal] = useState(false)
+  const [userData, setUserData] = useState({
+    name: '',
+    surname: '',
+    email: '',
+    password: '',
+    role: 'user'
+  })
+  const [formErrors, setFormErrors] = useState({})
+  const [submitting, setSubmitting] = useState(false)
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -26,6 +69,36 @@ export const UsersContainer = () => {
 
     fetchUsers()
   }, [])
+
+  const handleOpenModal = useCallback(() => {
+    setShowModal(true)
+    setUserData({
+      name: '',
+      surname: '',
+      email: '',
+      password: '',
+      role: 'user'
+    })
+    setFormErrors({})
+  }, [])
+
+  // Exponer la función para abrir el modal a través de la ref
+  // Usar un pequeño delay para evitar actualizaciones durante el render
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (onOpenModalRef) {
+        onOpenModalRef.current = handleOpenModal
+      }
+    }, 0)
+    
+    // Limpiar la ref cuando el componente se desmonte
+    return () => {
+      clearTimeout(timer)
+      if (onOpenModalRef) {
+        onOpenModalRef.current = null
+      }
+    }
+  }, [onOpenModalRef, handleOpenModal])
 
   const handleToggleStatus = async (user) => {
     const newStatus = !user.active
@@ -177,6 +250,95 @@ export const UsersContainer = () => {
     }
   }
 
+  const handleCloseModal = () => {
+    setShowModal(false)
+    setUserData({
+      name: '',
+      surname: '',
+      email: '',
+      password: '',
+      role: 'user'
+    })
+    setFormErrors({})
+  }
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target
+    setUserData((prev) => ({
+      ...prev,
+      [name]: value
+    }))
+
+    // Limpiar error del campo cuando el usuario empieza a escribir
+    if (formErrors[name]) {
+      setFormErrors((prev) => {
+        const updated = { ...prev }
+        delete updated[name]
+        return updated
+      })
+    }
+  }
+
+  const handleInputBlur = () => {
+    const validationErrors = validateUserData(userData)
+    setFormErrors((prev) => {
+      const updated = { ...prev }
+      Object.keys(validationErrors).forEach((key) => {
+        updated[key] = validationErrors[key]
+      })
+      return updated
+    })
+  }
+
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+    const validationErrors = validateUserData(userData)
+
+    if (Object.keys(validationErrors).length > 0) {
+      setFormErrors(validationErrors)
+      return
+    }
+
+    setSubmitting(true)
+    setFormErrors({})
+
+    try {
+      const newUser = await createUser(userData)
+      
+      // Actualizar la lista de usuarios
+      setUsers((prevUsers) => [...prevUsers, newUser])
+      
+      // Cerrar modal y mostrar éxito
+      handleCloseModal()
+      
+      Swal.fire({
+        icon: 'success',
+        title: 'Usuario creado',
+        text: `El usuario "${newUser.name} ${newUser.surname}" ha sido creado correctamente.`,
+        toast: true,
+        position: 'top-end',
+        showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar: true,
+        customClass: {
+          popup: 'swal2-toast-large',
+          title: 'swal2-toast-title-large',
+          content: 'swal2-toast-content-large'
+        },
+        didOpen: (toast) => {
+          toast.addEventListener('mouseenter', Swal.stopTimer)
+          toast.addEventListener('mouseleave', Swal.resumeTimer)
+        }
+      })
+    } catch (err) {
+      console.error('Error al crear usuario:', err)
+      const errorMessage = err?.message || 'No se pudo crear el usuario. Intenta nuevamente.'
+      setFormErrors({ general: errorMessage })
+    } finally {
+      setSubmitting(false)
+    }
+  }
+
   return (
     <UsersUI
       users={users}
@@ -185,6 +347,15 @@ export const UsersContainer = () => {
       processing={processing}
       onToggleStatus={handleToggleStatus}
       onResetPassword={handleResetPassword}
+      showModal={showModal}
+      userData={userData}
+      formErrors={formErrors}
+      submitting={submitting}
+      onOpenModal={handleOpenModal}
+      onCloseModal={handleCloseModal}
+      onInputChange={handleInputChange}
+      onInputBlur={handleInputBlur}
+      onSubmit={handleSubmit}
     />
   )
 }

@@ -7,7 +7,16 @@ export const UsersUI = ({
   error,
   processing,
   onToggleStatus,
-  onResetPassword
+  onResetPassword,
+  showModal,
+  userData,
+  formErrors,
+  submitting,
+  onOpenModal,
+  onCloseModal,
+  onInputChange,
+  onInputBlur,
+  onSubmit
 }) => {
 
   const getRoleLabel = (role) => {
@@ -168,6 +177,130 @@ export const UsersUI = ({
             </article>
           ))}
       </div>
+
+      {/* Modal de registro de usuario */}
+      {showModal && (
+        <div className="users__modal-overlay" onClick={onCloseModal}>
+          <div className="users__modal-content" onClick={(e) => e.stopPropagation()}>
+            <div className="users__modal-header">
+              <h3 className="users__modal-title">Registrar Nuevo Usuario</h3>
+              <button
+                type="button"
+                className="users__modal-close"
+                onClick={onCloseModal}
+                aria-label="Cerrar modal"
+              >
+                <i className="fa-solid fa-times" aria-hidden="true" />
+              </button>
+            </div>
+
+            <form className="users__modal-form" onSubmit={onSubmit} noValidate>
+              <div className="form-group">
+                <label htmlFor="name" className="form-label">Nombre</label>
+                <input
+                  type="text"
+                  id="name"
+                  name="name"
+                  value={userData.name}
+                  onChange={onInputChange}
+                  onBlur={onInputBlur}
+                  className={`form-input ${formErrors.name ? 'form-input-error' : ''}`}
+                  placeholder="Ingresá el nombre"
+                  autoComplete="given-name"
+                />
+                {formErrors.name && <p className="form-error">{formErrors.name}</p>}
+              </div>
+
+              <div className="form-group">
+                <label htmlFor="surname" className="form-label">Apellido</label>
+                <input
+                  type="text"
+                  id="surname"
+                  name="surname"
+                  value={userData.surname}
+                  onChange={onInputChange}
+                  onBlur={onInputBlur}
+                  className={`form-input ${formErrors.surname ? 'form-input-error' : ''}`}
+                  placeholder="Ingresá el apellido"
+                  autoComplete="family-name"
+                />
+                {formErrors.surname && <p className="form-error">{formErrors.surname}</p>}
+              </div>
+
+              <div className="form-group">
+                <label htmlFor="email" className="form-label">Correo electrónico</label>
+                <input
+                  type="email"
+                  id="email"
+                  name="email"
+                  value={userData.email}
+                  onChange={onInputChange}
+                  onBlur={onInputBlur}
+                  className={`form-input ${formErrors.email ? 'form-input-error' : ''}`}
+                  placeholder="nombre@correo.com"
+                  autoComplete="email"
+                />
+                {formErrors.email && <p className="form-error">{formErrors.email}</p>}
+              </div>
+
+              <div className="form-group">
+                <label htmlFor="password" className="form-label">Contraseña</label>
+                <input
+                  type="password"
+                  id="password"
+                  name="password"
+                  value={userData.password}
+                  onChange={onInputChange}
+                  onBlur={onInputBlur}
+                  className={`form-input ${formErrors.password ? 'form-input-error' : ''}`}
+                  placeholder="••••••••"
+                  autoComplete="new-password"
+                />
+                {formErrors.password && <p className="form-error">{formErrors.password}</p>}
+              </div>
+
+              <div className="form-group">
+                <label htmlFor="role" className="form-label">Rol</label>
+                <select
+                  id="role"
+                  name="role"
+                  value={userData.role}
+                  onChange={onInputChange}
+                  onBlur={onInputBlur}
+                  className={`form-input ${formErrors.role ? 'form-input-error' : ''}`}
+                >
+                  <option value="user">Usuario</option>
+                  <option value="admin">Administrador</option>
+                </select>
+                {formErrors.role && <p className="form-error">{formErrors.role}</p>}
+              </div>
+
+              {formErrors.general && (
+                <p className="form-error form-error-general">{formErrors.general}</p>
+              )}
+
+              <div className="users__modal-actions">
+                <button
+                  type="button"
+                  className="users__modal-button users__modal-button--cancel"
+                  onClick={onCloseModal}
+                  disabled={submitting}
+                >
+                  Cancelar
+                </button>
+                <button
+                  type="submit"
+                  className="users__modal-button users__modal-button--submit"
+                  disabled={submitting}
+                >
+                  <i className={submitting ? 'fas fa-spinner fa-spin' : 'fas fa-user-plus'}></i>
+                  <span>{submitting ? 'Creando...' : 'Crear Usuario'}</span>
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </section>
   )
 }

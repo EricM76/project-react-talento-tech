@@ -91,9 +91,75 @@ const resetUserPassword = async (id) => {
   }
 }
 
+/**
+ * Crea un nuevo usuario
+ * @param {Object} userData - Datos del nuevo usuario
+ * @param {string} userData.name - Nombre del usuario
+ * @param {string} userData.surname - Apellido del usuario
+ * @param {string} userData.email - Email del usuario
+ * @param {string} userData.password - Contraseña del usuario
+ * @param {string} userData.role - Rol del usuario (opcional, por defecto 'user')
+ * @returns {Promise<Object>} Usuario creado sin contraseña
+ */
+const createUser = async (userData) => {
+  try {
+    const { name, surname, email, password, role = 'user' } = userData
+
+    // Validaciones
+    if (!name || !surname || !email || !password) {
+      throw new Error('Todos los campos son requeridos')
+    }
+
+    if (password.length < 4) {
+      throw new Error('La contraseña debe tener al menos 4 caracteres')
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    if (!emailRegex.test(email)) {
+      throw new Error('Email inválido')
+    }
+
+    const users = await loadUsers()
+
+    // Verificar si el email ya existe
+    const emailExists = users.some((u) => u.email.toLowerCase() === email.toLowerCase())
+    if (emailExists) {
+      throw new Error('El email ya está registrado')
+    }
+
+    // Generar nuevo ID
+    const maxId = users.length > 0 ? Math.max(...users.map((u) => u.id)) : 0
+    const newId = maxId + 1
+
+    // Crear nuevo usuario
+    const newUser = {
+      id: newId,
+      name: name.trim(),
+      surname: surname.trim(),
+      email: email.toLowerCase().trim(),
+      password: password,
+      token: null,
+      role: role,
+      active: true
+    }
+
+    // Agregar usuario a la lista
+    const updatedUsers = [...users, newUser]
+    await saveUsers(updatedUsers)
+
+    // Retornar usuario sin contraseña
+    const { password: _, ...userWithoutPassword } = newUser
+    return userWithoutPassword
+  } catch (error) {
+    console.error('Create user error:', error)
+    throw error
+  }
+}
+
 export {
   getUsers,
   updateUserStatus,
-  resetUserPassword
+  resetUserPassword,
+  createUser
 }
 

@@ -13,6 +13,7 @@ import { AdminLayout } from './layouts/AdminLayout'
 import { LoginFormContainer } from './components/authComponents/LoginFormContainer'
 import { ProtectedRoute } from './components/ProtectedRoute'
 import { AdminProductsPage, ProductCreatePage } from './components/adminComponents/Products'
+import { AdminUsersPage } from './components/adminComponents/Users'
 import { AuthProvider } from './context/AuthProvider'
 
 function App() {
@@ -50,6 +51,14 @@ function App() {
             element={
               <ProtectedRoute>
                 <ProductCreatePage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path='usuarios'
+            element={
+              <ProtectedRoute requireAdmin={true}>
+                <AdminUsersPage />
               </ProtectedRoute>
             }
           />

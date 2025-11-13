@@ -5,7 +5,8 @@ import './Sidebar.css'
 
 const menuItems = [
   { label: 'Panel', to: '/admin/dashboard' },
-  { label: 'Productos', to: '/admin/productos' }
+  { label: 'Productos', to: '/admin/productos' },
+  { label: 'Usuarios', to: '/admin/usuarios' }
 ]
 
 export const Sidebar = ({ isOpen, onClose }) => {

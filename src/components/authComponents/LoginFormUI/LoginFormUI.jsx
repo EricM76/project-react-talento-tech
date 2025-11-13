@@ -1,4 +1,5 @@
 import React from 'react'
+import { Link } from 'react-router-dom'
 import './LoginFormUI.css'
 
 export const LoginFormUI = ({
@@ -77,6 +78,14 @@ export const LoginFormUI = ({
             <span>{loading ? 'Ingresando...' : 'Ingresar'}</span>
           </button>
         </form>
+      </div>
+
+      <div className="row back-home-row">
+        <div className="col-12">
+          <Link to="/" className="back-home-link">
+            <i className="fas fa-arrow-left"></i> Volver al Home
+          </Link>
+        </div>
       </div>
     </>
   )

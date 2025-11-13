@@ -1,7 +1,7 @@
 import React, { useContext, useState } from 'react'
 import './LoginFormContainer.css'
 import { LoginFormUI } from '../LoginFormUI'
-import { useNavigate } from 'react-router-dom'
+import { Navigate, useNavigate } from 'react-router-dom'
 import { AuthContext } from '../../../context/AuthContext'
 import { login } from '../../../services/auth'
 import Swal from 'sweetalert2'
@@ -28,7 +28,7 @@ const validateCredentials = (credentials) => {
 }
 
 export const LoginFormContainer = () => {
-  const { setAuth } = useContext(AuthContext)
+  const { auth, setAuth, isInitializing } = useContext(AuthContext)
   const [credentials, setCredentials] = useState({
     email: '',
     password: '',
@@ -38,6 +38,17 @@ export const LoginFormContainer = () => {
   const [loading, setLoading] = useState(false)
 
   const navigate = useNavigate()
+
+  // Si aún se está inicializando, no renderizar nada (evita parpadeo)
+  // useLayoutEffect en AuthProvider asegura que esto sea muy rápido
+  if (isInitializing) {
+    return null
+  }
+
+  // Si hay auth, redirigir inmediatamente sin mostrar el formulario
+  if (auth) {
+    return <Navigate to="/admin/dashboard" replace />
+  }
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target
@@ -98,23 +109,12 @@ export const LoginFormContainer = () => {
     try {
       const { user } = await login(credentials.email, credentials.password)
       
-      // Guardar datos de autenticación
+      // Guardar datos de autenticación usando setAuth del contexto
+      // setAuth ahora maneja automáticamente localStorage/sessionStorage según remember
       setAuth({
         ...user,
         remember: credentials.remember
       })
-
-      // Si el usuario quiere que se le recuerde, guardar en localStorage
-      if (credentials.remember) {
-        localStorage.setItem('auth', JSON.stringify({
-          ...user,
-          remember: true
-        }))
-      } else {
-        // Si no quiere recordar, solo guardar en sessionStorage
-        sessionStorage.setItem('auth', JSON.stringify(user))
-        localStorage.removeItem('auth')
-      }
 
       navigate('/admin/dashboard')
     } catch (error) {

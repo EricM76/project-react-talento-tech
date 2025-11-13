@@ -1,5 +1,6 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { NavLink, useNavigate } from 'react-router-dom'
+import { AuthContext } from '../../../context/AuthContext'
 import './Sidebar.css'
 
 const menuItems = [
@@ -9,9 +10,16 @@ const menuItems = [
 
 export const Sidebar = ({ isOpen, onClose }) => {
   const navigate = useNavigate()
+  const { logout } = useContext(AuthContext)
 
   const handleAddProduct = () => {
     navigate('/admin/productos/nuevo')
+    onClose?.()
+  }
+
+  const handleLogout = () => {
+    logout()
+    navigate('/admin')
     onClose?.()
   }
 
@@ -54,6 +62,19 @@ export const Sidebar = ({ isOpen, onClose }) => {
           </div>
         ))}
       </nav>
+
+      <div className='sidebar-footer'>
+        <button
+          type='button'
+          className='sidebar-logout-button'
+          onClick={handleLogout}
+          title='Cerrar sesión'
+          aria-label='Cerrar sesión'
+        >
+          <i className='fa-solid fa-sign-out-alt' aria-hidden='true' />
+          <span>Cerrar sesión</span>
+        </button>
+      </div>
     </aside>
   )
 }

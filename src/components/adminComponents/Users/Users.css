@@ -28,6 +28,55 @@
   font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 }
 
+.users__header {
+  display: none; /* Oculto por defecto (vista de tabla) */
+  justify-content: flex-end;
+  align-items: center;
+  width: 100%;
+}
+
+.users__register-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  padding: 0.85rem 1.5rem;
+  background: var(--users-primary);
+  color: #fff;
+  border: none;
+  border-radius: 0.5rem;
+  font-size: 1.4rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 4px rgba(37, 99, 235, 0.2);
+}
+
+.users__register-button:hover:not(:disabled) {
+  background: var(--users-primary-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(37, 99, 235, 0.3);
+}
+
+.users__register-button:active:not(:disabled) {
+  transform: translateY(0);
+  box-shadow: 0 2px 4px rgba(37, 99, 235, 0.2);
+}
+
+.users__register-button:focus-visible {
+  outline: 2px solid rgba(37, 99, 235, 0.35);
+  outline-offset: 2px;
+}
+
+.users__register-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.users__register-button i {
+  font-size: 1.3rem;
+}
+
 .users__table-wrapper {
   width: 100%;
   overflow-x: auto;
@@ -276,6 +325,18 @@
 
 /* Vista móvil con cards */
 @media (max-width: 768px) {
+  .users__header {
+    display: flex; /* Mostrar solo en móvil (vista de cards) */
+    justify-content: center;
+  }
+
+  .users__register-button {
+    width: 100%;
+    max-width: 100%;
+    padding: 1rem 1.5rem;
+    font-size: 1.5rem;
+  }
+
   .users__table-wrapper {
     display: none;
   }

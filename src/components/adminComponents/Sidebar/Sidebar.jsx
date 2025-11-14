@@ -19,15 +19,16 @@ export const Sidebar = ({ isOpen, onClose, onOpenUserModal }) => {
   }
 
   const handleAddUser = () => {
-    // Solo abrir el modal si estamos en la página de usuarios y la función está disponible
+    // Si estamos en la página de usuarios, intentar abrir el modal directamente
     if (window.location.pathname === '/admin/usuarios') {
       if (onOpenUserModal && typeof onOpenUserModal === 'function') {
         onOpenUserModal()
       }
       onClose?.()
     } else {
-      // Si no estamos en la página de usuarios, solo navegar (sin abrir el modal automáticamente)
-      // El usuario puede hacer clic en el botón de nuevo cuando esté en la página
+      // Si no estamos en la página de usuarios, navegar y marcar que debe abrirse el modal
+      // Usar sessionStorage para comunicar que debe abrirse el modal
+      sessionStorage.setItem('openUserModal', 'true')
       navigate('/admin/usuarios')
       onClose?.()
     }

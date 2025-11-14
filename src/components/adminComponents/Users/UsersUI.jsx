@@ -33,6 +33,18 @@ export const UsersUI = ({
 
   return (
     <section className="users__container">
+      <div className="users__header">
+        <button
+          type="button"
+          className="users__register-button"
+          onClick={onOpenModal}
+          title="Registrar nuevo usuario"
+          aria-label="Registrar nuevo usuario"
+        >
+          <i className="fa-solid fa-user-plus" aria-hidden="true" />
+          <span>Registrar Usuario</span>
+        </button>
+      </div>
       <div className="users__table-wrapper">
         <table className="users__table">
           <thead>

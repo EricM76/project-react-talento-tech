@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback } from 'react'
-import { getUsers, updateUserStatus, resetUserPassword, createUser } from '../../../services/users'
+import { getUsers, updateUserStatus, resetUserPassword, createUser, deleteUser } from '../../../services/users'
 import { UsersUI } from './UsersUI'
 import Swal from 'sweetalert2'
 
@@ -250,6 +250,80 @@ export const UsersContainer = ({ onOpenModalRef }) => {
     }
   }
 
+  const handleDeleteUser = async (user) => {
+    const result = await Swal.fire({
+      title: '¿Eliminar usuario?',
+      html: `<p style="font-size: 18px;">¿Estás seguro de que deseas eliminar al usuario "<strong>${user.name} ${user.surname}</strong>"?</p><p style="font-size: 14px; color: #dc2626; margin-top: 10px; font-weight: 600;">Esta acción no se puede deshacer.</p>`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#dc2626',
+      cancelButtonColor: '#6b7280',
+      confirmButtonText: 'Sí, eliminar',
+      cancelButtonText: 'Cancelar',
+      width: '600px',
+      customClass: {
+        popup: 'swal2-popup-large',
+        confirmButton: 'swal2-confirm-large',
+        cancelButton: 'swal2-cancel-large'
+      },
+      buttonsStyling: true
+    })
+
+    if (result.isConfirmed) {
+      try {
+        setProcessing(true)
+        setError(null)
+        await deleteUser(user.id)
+        
+        // Actualizar la lista local de usuarios
+        setUsers((prevUsers) => prevUsers.filter((item) => item.id !== user.id))
+
+        Swal.fire({
+          icon: 'success',
+          title: 'Usuario eliminado',
+          text: `El usuario "${user.name} ${user.surname}" ha sido eliminado correctamente.`,
+          toast: true,
+          position: 'top-end',
+          showConfirmButton: false,
+          timer: 3000,
+          timerProgressBar: true,
+          customClass: {
+            popup: 'swal2-toast-large',
+            title: 'swal2-toast-title-large',
+            content: 'swal2-toast-content-large'
+          },
+          didOpen: (toast) => {
+            toast.addEventListener('mouseenter', Swal.stopTimer)
+            toast.addEventListener('mouseleave', Swal.resumeTimer)
+          }
+        })
+      } catch (err) {
+        console.error('Error al eliminar el usuario:', err)
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'No se pudo eliminar el usuario. Intenta nuevamente.',
+          toast: true,
+          position: 'top-end',
+          showConfirmButton: false,
+          timer: 5000,
+          timerProgressBar: true,
+          customClass: {
+            popup: 'swal2-toast-large',
+            title: 'swal2-toast-title-large',
+            content: 'swal2-toast-content-large'
+          },
+          didOpen: (toast) => {
+            toast.addEventListener('mouseenter', Swal.stopTimer)
+            toast.addEventListener('mouseleave', Swal.resumeTimer)
+          }
+        })
+      } finally {
+        setProcessing(false)
+      }
+    }
+  }
+
   const handleCloseModal = () => {
     setShowModal(false)
     setUserData({
@@ -347,6 +421,7 @@ export const UsersContainer = ({ onOpenModalRef }) => {
       processing={processing}
       onToggleStatus={handleToggleStatus}
       onResetPassword={handleResetPassword}
+      onDeleteUser={handleDeleteUser}
       showModal={showModal}
       userData={userData}
       formErrors={formErrors}

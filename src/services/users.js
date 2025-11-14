@@ -156,10 +156,34 @@ const createUser = async (userData) => {
   }
 }
 
+/**
+ * Elimina un usuario
+ * @param {number} id - ID del usuario a eliminar
+ * @returns {Promise<void>}
+ */
+const deleteUser = async (id) => {
+  try {
+    const users = await loadUsers()
+    const userIndex = users.findIndex((u) => u.id === id)
+    
+    if (userIndex === -1) {
+      throw new Error('Usuario no encontrado')
+    }
+
+    // Eliminar usuario de la lista
+    const updatedUsers = users.filter((u) => u.id !== id)
+    await saveUsers(updatedUsers)
+  } catch (error) {
+    console.error('Delete user error:', error)
+    throw error
+  }
+}
+
 export {
   getUsers,
   updateUserStatus,
   resetUserPassword,
-  createUser
+  createUser,
+  deleteUser
 }
 

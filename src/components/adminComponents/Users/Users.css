@@ -245,6 +245,15 @@
   background: var(--users-warning-hover);
 }
 
+.users__button--danger {
+  background: var(--users-danger);
+  color: #fff;
+}
+
+.users__button--danger:hover:not(:disabled) {
+  background: var(--users-danger-hover);
+}
+
 .users__button i {
   font-size: 1.2rem;
 }

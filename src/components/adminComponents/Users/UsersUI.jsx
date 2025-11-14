@@ -8,6 +8,7 @@ export const UsersUI = ({
   processing,
   onToggleStatus,
   onResetPassword,
+  onDeleteUser,
   showModal,
   userData,
   formErrors,
@@ -121,6 +122,17 @@ export const UsersUI = ({
                         <i className="fa-solid fa-key" aria-hidden="true" />
                         <span className="sr-only">Blanquear contraseña</span>
                       </button>
+                      <button
+                        type="button"
+                        className="users__button users__button--danger"
+                        onClick={() => onDeleteUser(user)}
+                        disabled={processing}
+                        title="Eliminar usuario"
+                        aria-label="Eliminar usuario"
+                      >
+                        <i className="fa-solid fa-trash" aria-hidden="true" />
+                        <span className="sr-only">Eliminar</span>
+                      </button>
                     </div>
                   </td>
                 </tr>
@@ -184,6 +196,15 @@ export const UsersUI = ({
                 >
                   <i className="fa-solid fa-key" aria-hidden="true" />
                   <span>Blanquear contraseña</span>
+                </button>
+                <button
+                  type="button"
+                  className="users__button users__button--danger"
+                  onClick={() => onDeleteUser(user)}
+                  disabled={processing}
+                >
+                  <i className="fa-solid fa-trash" aria-hidden="true" />
+                  <span>Eliminar</span>
                 </button>
               </div>
             </article>

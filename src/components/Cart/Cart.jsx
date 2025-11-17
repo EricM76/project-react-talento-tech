@@ -2,6 +2,7 @@ import React from 'react';
 import './Cart.css';
 import { useCart } from '../../context/useCartContext';
 import { toThousand } from '../../utils';
+import Swal from 'sweetalert2';
 
 export const Cart = ({ isOpen, onClose }) => {
   const {
@@ -28,6 +29,24 @@ export const Cart = ({ isOpen, onClose }) => {
       document.body.style.overflow = 'unset';
     };
   }, [isOpen]);
+
+  // Manejar la finalización de la compra
+  const handleFinalizePurchase = () => {
+    clearCart();
+    onClose();
+    Swal.fire({
+      icon: 'success',
+      title: 'Gracias por tu compra',
+      text: 'En breve recibirás tu pedido',
+      confirmButtonText: 'Entendido',
+      width: '600px',
+      customClass: {
+        popup: 'swal2-popup-large',
+        confirmButton: 'swal2-confirm-large'
+      },
+      buttonsStyling: true
+    });
+  };
 
   if (!isOpen) return null;
 
@@ -158,7 +177,7 @@ export const Cart = ({ isOpen, onClose }) => {
                     <i className="fas fa-trash me-2"></i>
                     Vaciar Carrito
                   </button>
-                  <button className="btn btn-primary w-100">
+                  <button className="btn btn-primary w-100" onClick={handleFinalizePurchase}>
                     <i className="fas fa-check me-2"></i>
                     Finalizar Compra
                   </button>

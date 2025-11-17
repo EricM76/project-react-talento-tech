@@ -1,9 +1,8 @@
 services:
-  - type: web
+  - type: static
     name: project-react
-    env: node
     buildCommand: npm install && npm run build
-    startCommand: npm start
+    publishPath: dist
     # Configuración para SPA: redirigir todas las rutas a index.html
     # Esto permite que React Router maneje las rutas del lado del cliente
     routes:

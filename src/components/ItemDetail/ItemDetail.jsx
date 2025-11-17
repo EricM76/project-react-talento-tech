@@ -3,9 +3,54 @@ import './ItemDetail.css'
 import { toThousand } from '../../utils'
 import { CarouselItems } from '../CarouselItems'
 import { useCart } from '../../context/useCartContext'
+import { Link } from 'react-router-dom'
 
 export const ItemDetail = ({ product, products }) => {
   const { addToCart, isInCart } = useCart()
+  
+  // Si el producto no existe, mostrar vista de "no encontrado"
+  if (!product) {
+    return (
+      <div className="product-not-found">
+        <div className="row">
+          <div className="col-12">
+            <div className="not-found-container">
+              <div className="not-found-icon">
+                <i className="fas fa-search"></i>
+              </div>
+              <h2 className="not-found-title">Producto no encontrado</h2>
+              <p className="not-found-message">
+                Lo sentimos, el producto que estás buscando no existe o ha sido eliminado de nuestra base de datos.
+              </p>
+              <div className="not-found-actions">
+                <Link to="/products" className="btn btn-primary">
+                  <i className="fas fa-arrow-left me-2"></i>
+                  Ver todos los productos
+                </Link>
+                <Link to="/" className="btn btn-outline-primary">
+                  <i className="fas fa-home me-2"></i>
+                  Volver al inicio
+                </Link>
+              </div>
+            </div>
+          </div>
+        </div>
+        {products && products.length > 0 && (
+          <div className="row mt-5">
+            <div className="col-12">
+              <h3 className="products-title">Productos relacionados</h3>
+            </div>
+          </div>
+        )}
+        {products && products.length > 0 && (
+          <CarouselItems
+            products={products}
+            itemsPerView={4}
+          />
+        )}
+      </div>
+    )
+  }
   
   return (
     <>

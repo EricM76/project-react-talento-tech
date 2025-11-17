@@ -11,13 +11,22 @@ export const ItemDetailContainer = () => {
   const [product, setProduct] = useState(null);
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [notFound, setNotFound] = useState(false);
 
 
   useEffect(() => {
     // Simulamos un delay de 2 segundos para ver el efecto de carga
     const getData = async () => {
       try {
-        const dataProduct = await getProductById(id);        
+        const dataProduct = await getProductById(id);
+        
+        // Verificar si el producto existe (algunas APIs retornan objeto vacío)
+        if (!dataProduct || !dataProduct.id) {
+          setNotFound(true);
+          setLoading(false);
+          return;
+        }
+        
         setProduct(dataProduct);
         const dataProducts = await getProducts();
         
@@ -59,6 +68,7 @@ export const ItemDetailContainer = () => {
         setLoading(false);
       } catch (error) {
         console.error("Error loading product:", error);
+        setNotFound(true);
         setLoading(false);
       }
     };
@@ -70,6 +80,8 @@ export const ItemDetailContainer = () => {
     <div className="container products-wrapper">
       {loading ? (
         <ItemDetailContainerSkeleton />
+      ) : notFound ? (
+        <ItemDetail product={null} products={products} />
       ) : (
         <ItemDetail product={product} products={products} />
       )}

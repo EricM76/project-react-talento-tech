@@ -1,7 +1,7 @@
 import express from 'express';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
-import { readFileSync, existsSync } from 'fs';
+import { readFileSync, existsSync, statSync } from 'fs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -15,16 +15,53 @@ app.use((req, res, next) => {
   next();
 });
 
-// Servir archivos estáticos desde la carpeta dist
-// Esto servirá automáticamente index.html si se solicita directamente
-app.use(express.static(join(__dirname, 'dist'), {
-  maxAge: '1y',
-  etag: true
-}));
+// Función para servir archivos estáticos manualmente
+const serveStatic = (req, res, next) => {
+  const filePath = join(__dirname, 'dist', req.path);
+  
+  // Si la petición es para la raíz o no tiene extensión, es una ruta de la SPA
+  if (req.path === '/' || !req.path.match(/\.[^/]+$/)) {
+    return next();
+  }
+  
+  // Verificar si el archivo existe
+  if (existsSync(filePath)) {
+    try {
+      const stats = statSync(filePath);
+      if (stats.isFile()) {
+        // Servir el archivo estático
+        const content = readFileSync(filePath);
+        const ext = req.path.split('.').pop();
+        const contentType = {
+          'html': 'text/html',
+          'js': 'application/javascript',
+          'css': 'text/css',
+          'json': 'application/json',
+          'png': 'image/png',
+          'jpg': 'image/jpeg',
+          'jpeg': 'image/jpeg',
+          'gif': 'image/gif',
+          'svg': 'image/svg+xml',
+          'ico': 'image/x-icon'
+        }[ext] || 'application/octet-stream';
+        
+        res.setHeader('Content-Type', contentType);
+        res.setHeader('Cache-Control', 'public, max-age=31536000');
+        return res.send(content);
+      }
+    } catch (error) {
+      console.error('Error serving static file:', error);
+    }
+  }
+  
+  // Si no es un archivo estático, continuar al siguiente middleware
+  next();
+};
 
-// Para todas las rutas que no sean archivos estáticos, servir index.html (SPA fallback)
+app.use(serveStatic);
+
+// Para todas las rutas de la SPA, servir index.html (SPA fallback)
 // Esto maneja las rutas del cliente como /admin, /products, etc.
-// Usamos app.all para manejar todos los métodos HTTP (GET, POST, PUT, DELETE, etc.)
 app.all('*', (req, res) => {
   try {
     const indexPath = join(__dirname, 'dist', 'index.html');

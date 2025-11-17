@@ -44,7 +44,7 @@
     "name": "Luis",
     "surname": "Fernández",
     "email": "luis.fernandez@gmail.com",
-    "password": "password345",
+    "password": "1234",
     "token": null,
     "role": "user",
     "active": false

@@ -8,8 +8,12 @@ export const validateProduct = (product, file = null, fileRequired = true) => {
    if (!product.price || product.price <= 0) {
     errors.price = 'El precio es requerido'
    }
-   if (!product.discount || product.discount < 0 || product.discount > 100) {
-    errors.discount = 'El descuento es requerido'
+   // El descuento es opcional, pero si se proporciona debe estar entre 0 y 100
+   if (product.discount !== undefined && product.discount !== null && product.discount !== '') {
+    const discountValue = Number(product.discount)
+    if (isNaN(discountValue) || discountValue < 0 || discountValue > 100) {
+     errors.discount = 'El descuento debe ser un número entre 0 y 100'
+    }
    }
    if (!product.description || product.description.trim() === '') {
     errors.description = 'La descripción es requerida'

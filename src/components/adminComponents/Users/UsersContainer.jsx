@@ -154,10 +154,12 @@ export const UsersContainer = ({ onOpenModalRef }) => {
         })
       } catch (err) {
         console.error('Error al actualizar el estado del usuario:', err)
+        const errorMessage = err?.message || 'No se pudo actualizar el estado del usuario. Intenta nuevamente.'
+        
         Swal.fire({
           icon: 'error',
           title: 'Error',
-          text: 'No se pudo actualizar el estado del usuario. Intenta nuevamente.',
+          text: errorMessage,
           toast: true,
           position: 'top-end',
           showConfirmButton: false,

@@ -33,7 +33,7 @@ function App() {
           <Route
             path='dashboard'
             element={
-              <ProtectedRoute>
+              <ProtectedRoute requireAdmin={true}>
                 <Dashboard />
               </ProtectedRoute>
             }
@@ -41,7 +41,7 @@ function App() {
           <Route
             path='productos'
             element={
-              <ProtectedRoute>
+              <ProtectedRoute requireAdmin={true}>
                 <AdminProductsPage />
               </ProtectedRoute>
             }
@@ -49,7 +49,7 @@ function App() {
           <Route
             path='productos/nuevo'
             element={
-              <ProtectedRoute>
+              <ProtectedRoute requireAdmin={true}>
                 <ProductCreatePage />
               </ProtectedRoute>
             }

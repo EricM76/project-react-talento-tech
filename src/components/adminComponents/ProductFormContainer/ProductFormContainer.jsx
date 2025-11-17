@@ -76,8 +76,15 @@ export const ProductFormContainer = () => {
     
     try {
       const imageURL = await uploadToImgbb(file);
+      // Convertir descuento vacío, null o undefined a 0, y validar que sea un número válido
+      const discountValue = product.discount === '' || product.discount === null || product.discount === undefined 
+        ? 0 
+        : Number(product.discount);
+      const discount = isNaN(discountValue) || discountValue < 0 ? 0 : (discountValue > 100 ? 100 : discountValue);
+      const finalPrice = discount > 0 ? product.price * (1 - discount / 100) : product.price;
       const newProduct = { ...product, 
-        price: product.price * (1 - product.discount / 100),
+        price: finalPrice,
+        discount: discount,
         image: imageURL 
       };
 

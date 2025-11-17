@@ -1,62 +1,192 @@
-// Cargar usuarios desde el JSON
-const loadUsers = async () => {
+// Cargar usuarios desde el JSON local
+const loadUsersFromJSON = async () => {
   try {
     const response = await fetch('/data/users.json')
     if (!response.ok) {
-      throw new Error('Error al cargar usuarios')
+      throw new Error('Error al cargar usuarios desde JSON')
     }
     const users = await response.json()
     return users
   } catch (error) {
-    console.error('Error loading users:', error)
+    console.error('Error loading users from JSON:', error)
     throw error
   }
 }
 
-// Guardar usuarios en el JSON (simulado - en producción esto debería ser una API)
-const saveUsers = async (users) => {
-  // Nota: En un entorno real, esto debería hacer una petición PUT/PATCH a una API
-  // Por ahora, solo retornamos los usuarios actualizados
-  // El guardado real debería manejarse desde el backend
-  return users
+// Obtener cambios guardados en localStorage
+const getStoredUserChanges = () => {
+  try {
+    const stored = localStorage.getItem('userChanges')
+    return stored ? JSON.parse(stored) : {}
+  } catch (error) {
+    console.error('Error loading stored user changes:', error)
+    return {}
+  }
+}
+
+// Guardar cambios de usuario en localStorage
+const saveUserChanges = (changes) => {
+  try {
+    localStorage.setItem('userChanges', JSON.stringify(changes))
+  } catch (error) {
+    console.error('Error saving user changes:', error)
+  }
+}
+
+// Sincronizar cambios con el archivo JSON
+const syncChangesToJSON = async () => {
+  try {
+    // Cargar usuarios base del JSON
+    const baseUsers = await loadUsersFromJSON()
+    
+    // Aplicar cambios de localStorage
+    const changes = getStoredUserChanges()
+    const updatedUsers = baseUsers.map(user => {
+      const userId = String(user.id)
+      if (changes[userId]) {
+        const updated = { ...user, ...changes[userId] }
+        // Si está marcado como eliminado, no incluirlo
+        if (updated.deleted) {
+          return null
+        }
+        return updated
+      }
+      return user
+    }).filter(user => user !== null)
+    
+    // Agregar usuarios nuevos (que no están en el JSON base)
+    Object.keys(changes).forEach(userId => {
+      const change = changes[userId]
+      // Si tiene todos los campos necesarios y no está en el JSON base, es un usuario nuevo
+      if (change.name && change.email && !baseUsers.find(u => String(u.id) === userId)) {
+        updatedUsers.push(change)
+      }
+    })
+    
+    // Intentar guardar en el JSON usando el endpoint
+    const response = await fetch('/api/users', {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(updatedUsers)
+    })
+    
+    if (response.ok) {
+      // Si se guardó correctamente, limpiar localStorage
+      localStorage.removeItem('userChanges')
+      return true
+    } else {
+      console.warn('No se pudo sincronizar con el JSON, los cambios se mantienen en localStorage')
+      return false
+    }
+  } catch (error) {
+    // Si falla (por ejemplo en producción), solo guardar en localStorage
+    console.warn('Error al sincronizar con JSON:', error)
+    return false
+  }
+}
+
+// Aplicar cambios guardados a los usuarios del JSON
+const applyStoredChanges = (users) => {
+  const changes = getStoredUserChanges()
+  return users.map(user => {
+    const userId = String(user.id)
+    if (changes[userId]) {
+      return { ...user, ...changes[userId] }
+    }
+    return user
+  })
 }
 
 /**
  * Obtiene todos los usuarios (sin contraseñas)
+ * Carga desde JSON local y aplica cambios guardados en localStorage
  * @returns {Promise<Array>} Lista de usuarios sin contraseñas
  */
 const getUsers = async () => {
   try {
-    const users = await loadUsers()
+    // Cargar usuarios desde JSON local
+    const localUsers = await loadUsersFromJSON()
+    
+    // Aplicar cambios guardados en localStorage
+    const usersWithChanges = applyStoredChanges(localUsers)
+    
+    // Filtrar usuarios eliminados
+    const activeUsers = usersWithChanges.filter(user => !user.deleted)
+    
     // Retornar usuarios sin contraseñas
-    return users.map(({ password, ...user }) => user)
+    return activeUsers.map(({ password, ...user }) => user)
   } catch (error) {
     console.error('Get users error:', error)
+    throw new Error('No se pudieron cargar los usuarios')
+  }
+}
+
+/**
+ * Obtiene un usuario por ID (con contraseña para uso interno)
+ * @param {number|string} id - ID del usuario
+ * @returns {Promise<Object>} Usuario completo
+ */
+const getUserById = async (id) => {
+  try {
+    // Cargar usuarios desde JSON local
+    const localUsers = await loadUsersFromJSON()
+    
+    // Aplicar cambios guardados
+    const usersWithChanges = applyStoredChanges(localUsers)
+    
+    // Filtrar usuarios eliminados
+    const activeUsers = usersWithChanges.filter(user => !user.deleted)
+    
+    // Buscar usuario por ID
+    const user = activeUsers.find((u) => String(u.id) === String(id))
+    if (user) {
+      return user
+    }
+    
+    throw new Error('Usuario no encontrado')
+  } catch (error) {
+    console.error('Get user by id error:', error)
     throw error
   }
 }
 
 /**
  * Actualiza el estado activo/inactivo de un usuario
- * @param {number} id - ID del usuario
+ * @param {number|string} id - ID del usuario
  * @param {boolean} active - Nuevo estado activo
  * @returns {Promise<Object>} Usuario actualizado sin contraseña
  */
 const updateUserStatus = async (id, active) => {
   try {
-    const users = await loadUsers()
-    const userIndex = users.findIndex((u) => u.id === id)
+    // Obtener el usuario actual para mantener todos sus datos
+    const currentUser = await getUserById(id)
     
-    if (userIndex === -1) {
+    if (!currentUser) {
       throw new Error('Usuario no encontrado')
     }
-
-    // Actualizar el estado
-    users[userIndex].active = active
-    await saveUsers(users)
-
-    // Retornar usuario sin contraseña
-    const { password, ...userWithoutPassword } = users[userIndex]
+    
+    // Guardar el cambio en localStorage
+    const changes = getStoredUserChanges()
+    const userId = String(id)
+    changes[userId] = {
+      ...changes[userId],
+      active: active
+    }
+    saveUserChanges(changes)
+    
+    // Intentar sincronizar con el JSON (en segundo plano, no bloquea)
+    syncChangesToJSON().catch(err => {
+      console.warn('Error al sincronizar cambios:', err)
+    })
+    
+    // Retornar usuario actualizado sin contraseña
+    const updatedUser = {
+      ...currentUser,
+      active: active
+    }
+    const { password, ...userWithoutPassword } = updatedUser
     return userWithoutPassword
   } catch (error) {
     console.error('Update user status error:', error)
@@ -66,24 +196,34 @@ const updateUserStatus = async (id, active) => {
 
 /**
  * Blanquea la contraseña de un usuario (la establece en "1234")
- * @param {number} id - ID del usuario
+ * @param {number|string} id - ID del usuario
  * @returns {Promise<Object>} Usuario actualizado sin contraseña
  */
 const resetUserPassword = async (id) => {
   try {
-    const users = await loadUsers()
-    const userIndex = users.findIndex((u) => u.id === id)
+    // Obtener el usuario actual para mantener todos sus datos
+    const currentUser = await getUserById(id)
     
-    if (userIndex === -1) {
-      throw new Error('Usuario no encontrado')
+    // Guardar el cambio en localStorage
+    const changes = getStoredUserChanges()
+    const userId = String(id)
+    changes[userId] = {
+      ...changes[userId],
+      password: '1234'
     }
-
-    // Blanquear contraseña
-    users[userIndex].password = '1234'
-    await saveUsers(users)
-
-    // Retornar usuario sin contraseña
-    const { password, ...userWithoutPassword } = users[userIndex]
+    saveUserChanges(changes)
+    
+    // Intentar sincronizar con el JSON (en segundo plano, no bloquea)
+    syncChangesToJSON().catch(err => {
+      console.warn('Error al sincronizar cambios:', err)
+    })
+    
+    // Retornar usuario actualizado sin contraseña
+    const updatedUser = {
+      ...currentUser,
+      password: '1234'
+    }
+    const { password, ...userWithoutPassword } = updatedUser
     return userWithoutPassword
   } catch (error) {
     console.error('Reset user password error:', error)
@@ -119,21 +259,21 @@ const createUser = async (userData) => {
       throw new Error('Email inválido')
     }
 
-    const users = await loadUsers()
-
     // Verificar si el email ya existe
+    const users = await getUsers()
     const emailExists = users.some((u) => u.email.toLowerCase() === email.toLowerCase())
     if (emailExists) {
       throw new Error('El email ya está registrado')
     }
 
-    // Generar nuevo ID
-    const maxId = users.length > 0 ? Math.max(...users.map((u) => u.id)) : 0
-    const newId = maxId + 1
-
+    // Obtener el máximo ID de los usuarios existentes
+    const localUsers = await loadUsersFromJSON()
+    const usersWithChanges = applyStoredChanges(localUsers)
+    const maxId = usersWithChanges.length > 0 ? Math.max(...usersWithChanges.map((u) => Number(u.id) || 0)) : 0
+    
     // Crear nuevo usuario
     const newUser = {
-      id: newId,
+      id: maxId + 1,
       name: name.trim(),
       surname: surname.trim(),
       email: email.toLowerCase().trim(),
@@ -143,9 +283,16 @@ const createUser = async (userData) => {
       active: true
     }
 
-    // Agregar usuario a la lista
-    const updatedUsers = [...users, newUser]
-    await saveUsers(updatedUsers)
+    // Guardar el nuevo usuario en localStorage
+    const changes = getStoredUserChanges()
+    const userId = String(newUser.id)
+    changes[userId] = newUser
+    saveUserChanges(changes)
+
+    // Intentar sincronizar con el JSON (en segundo plano, no bloquea)
+    syncChangesToJSON().catch(err => {
+      console.warn('Error al sincronizar cambios:', err)
+    })
 
     // Retornar usuario sin contraseña
     const { password: _, ...userWithoutPassword } = newUser
@@ -158,21 +305,24 @@ const createUser = async (userData) => {
 
 /**
  * Elimina un usuario
- * @param {number} id - ID del usuario a eliminar
+ * @param {number|string} id - ID del usuario a eliminar
  * @returns {Promise<void>}
  */
 const deleteUser = async (id) => {
   try {
-    const users = await loadUsers()
-    const userIndex = users.findIndex((u) => u.id === id)
-    
-    if (userIndex === -1) {
-      throw new Error('Usuario no encontrado')
+    // Marcar el usuario como eliminado en localStorage
+    const changes = getStoredUserChanges()
+    const userId = String(id)
+    changes[userId] = {
+      ...changes[userId],
+      deleted: true
     }
-
-    // Eliminar usuario de la lista
-    const updatedUsers = users.filter((u) => u.id !== id)
-    await saveUsers(updatedUsers)
+    saveUserChanges(changes)
+    
+    // Intentar sincronizar con el JSON (en segundo plano, no bloquea)
+    syncChangesToJSON().catch(err => {
+      console.warn('Error al sincronizar cambios:', err)
+    })
   } catch (error) {
     console.error('Delete user error:', error)
     throw error
@@ -184,6 +334,7 @@ export {
   updateUserStatus,
   resetUserPassword,
   createUser,
-  deleteUser
+  deleteUser,
+  syncChangesToJSON
 }
 

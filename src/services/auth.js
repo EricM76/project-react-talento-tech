@@ -1,24 +1,56 @@
-// Cargar usuarios desde el JSON
-const loadUsers = async () => {
+// Cargar usuarios desde el JSON local
+const loadUsersFromJSON = async () => {
   try {
     const response = await fetch('/data/users.json')
     if (!response.ok) {
-      throw new Error('Error al cargar usuarios')
+      throw new Error('Error al cargar usuarios desde JSON')
     }
     const users = await response.json()
     return users
   } catch (error) {
-    console.error('Error loading users:', error)
+    console.error('Error loading users from JSON:', error)
     throw error
   }
 }
 
-// Guardar usuarios en el JSON (simulado - en producción esto debería ser una API)
-const saveUsers = async (users) => {
-  // Nota: En un entorno real, esto debería hacer una petición PUT/PATCH a una API
-  // Por ahora, solo retornamos los usuarios actualizados
-  // El guardado real debería manejarse desde el backend
-  return users
+// Obtener cambios guardados en localStorage
+const getStoredUserChanges = () => {
+  try {
+    const stored = localStorage.getItem('userChanges')
+    return stored ? JSON.parse(stored) : {}
+  } catch (error) {
+    console.error('Error loading stored user changes:', error)
+    return {}
+  }
+}
+
+// Aplicar cambios guardados a los usuarios del JSON
+const applyStoredChanges = (users) => {
+  const changes = getStoredUserChanges()
+  return users.map(user => {
+    const userId = String(user.id)
+    if (changes[userId]) {
+      return { ...user, ...changes[userId] }
+    }
+    return user
+  })
+}
+
+// Cargar usuarios desde JSON local con cambios aplicados (con contraseñas para autenticación)
+const loadUsers = async () => {
+  try {
+    // Cargar usuarios desde JSON local
+    const localUsers = await loadUsersFromJSON()
+    
+    // Aplicar cambios guardados en localStorage
+    const usersWithChanges = applyStoredChanges(localUsers)
+    
+    // Filtrar usuarios eliminados
+    return usersWithChanges.filter(user => !user.deleted)
+  } catch (error) {
+    console.error('Error loading users:', error)
+    throw new Error('No se pudieron cargar los usuarios')
+  }
 }
 
 /**
@@ -159,8 +191,13 @@ const register = async (userData) => {
       throw new Error('El email ya está registrado')
     }
 
+    // Obtener usuarios con cambios aplicados para calcular el máximo ID
+    const localUsers = await loadUsersFromJSON()
+    const usersWithChanges = applyStoredChanges(localUsers)
+    const activeUsers = usersWithChanges.filter(user => !user.deleted)
+    
     // Generar nuevo ID
-    const maxId = users.length > 0 ? Math.max(...users.map((u) => u.id)) : 0
+    const maxId = activeUsers.length > 0 ? Math.max(...activeUsers.map((u) => Number(u.id) || 0)) : 0
     const newId = maxId + 1
 
     // Crear nuevo usuario
@@ -175,9 +212,28 @@ const register = async (userData) => {
       active: true
     }
 
-    // Agregar usuario a la lista
-    const updatedUsers = [...users, newUser]
-    await saveUsers(updatedUsers)
+    // Guardar el nuevo usuario en localStorage
+    const changes = getStoredUserChanges()
+    const userId = String(newUser.id)
+    changes[userId] = newUser
+    try {
+      localStorage.setItem('userChanges', JSON.stringify(changes))
+    } catch (error) {
+      console.error('Error saving user changes:', error)
+      throw new Error('Error al guardar el usuario')
+    }
+
+    // Intentar sincronizar con el JSON (en segundo plano, no bloquea)
+    // Importar la función de sincronización desde users.js
+    try {
+      const { syncChangesToJSON } = await import('./users.js')
+      syncChangesToJSON().catch(err => {
+        console.warn('Error al sincronizar cambios:', err)
+      })
+    } catch (importError) {
+      // Si no se puede importar, solo continuar
+      console.warn('No se pudo sincronizar cambios:', importError)
+    }
 
     // Retornar usuario sin contraseña
     // El token será generado por el backend después del registro
@@ -194,13 +250,13 @@ const register = async (userData) => {
 
 /**
  * Obtiene un usuario por su ID
- * @param {number} id - ID del usuario
- * @returns {Promise<Object|null>} Usuario encontrado o null
+ * @param {number|string} id - ID del usuario
+ * @returns {Promise<Object|null>} Usuario encontrado o null (sin contraseña)
  */
 const getUserById = async (id) => {
   try {
     const users = await loadUsers()
-    const user = users.find((u) => u.id === id)
+    const user = users.find((u) => String(u.id) === String(id))
     if (!user) return null
 
     const { password: _, ...userWithoutPassword } = user

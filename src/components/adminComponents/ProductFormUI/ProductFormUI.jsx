@@ -182,15 +182,18 @@ export const ProductFormUI = ({
                   </div>
                   <div className="col-12 col-md-6">
                     <div className="form-group">
-                      <label htmlFor="discount" className="form-label">Descuento</label>
+                      <label htmlFor="discount" className="form-label">Descuento (opcional)</label>
                       <input 
                         type="number" 
                         name="discount" 
                         id="discount"
-                        value={product.discount} 
+                        value={product.discount || ''} 
                         onChange={onChange}
                         onBlur={onBlur}
                         className="form-input"
+                        min="0"
+                        max="100"
+                        placeholder="0-100"
                       />
                       {errors.discount && <p className="form-error">{errors.discount}</p>}
                     </div>

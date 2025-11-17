@@ -13,7 +13,15 @@ export const ProtectedRoute = ({ children, requireAdmin = false }) => {
 
     // Si se requiere rol de administrador, validar
     if (requireAdmin && auth.role !== 'admin') {
-        return <Navigate to="/admin/dashboard" />
+        return (
+            <div className="error-container">
+                <div className="error-message">
+                    <i className="fa-solid fa-triangle-exclamation"></i>
+                    <h2>Acceso Denegado</h2>
+                    <p>No tienes autorización para ingresar a la administración del sitio</p>
+                </div>
+            </div>
+        )
     }
 
     return children

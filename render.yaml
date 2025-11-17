@@ -4,4 +4,10 @@ services:
     env: node
     buildCommand: npm install && npm run build
     startCommand: npm start
+    # Configuración para SPA: redirigir todas las rutas a index.html
+    # Esto permite que React Router maneje las rutas del lado del cliente
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
 

@@ -16,14 +16,14 @@ app.use((req, res, next) => {
 });
 
 // Servir archivos estáticos desde la carpeta dist
+// Esto servirá automáticamente index.html si se solicita directamente
 app.use(express.static(join(__dirname, 'dist'), {
-  // Asegurar que los archivos estáticos se sirvan correctamente
   maxAge: '1y',
   etag: true
 }));
 
-// Para todas las rutas, servir index.html (SPA fallback)
-// Esto debe ir después de express.static para que los archivos estáticos tengan prioridad
+// Para todas las rutas que no sean archivos estáticos, servir index.html (SPA fallback)
+// Esto maneja las rutas del cliente como /admin, /products, etc.
 // Usamos app.all para manejar todos los métodos HTTP (GET, POST, PUT, DELETE, etc.)
 app.all('*', (req, res) => {
   try {

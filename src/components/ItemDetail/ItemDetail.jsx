@@ -99,11 +99,6 @@ export const ItemDetail = ({ product, products }) => {
                 >
                   {isInCart(product.id) ? 'YA ESTÁ EN EL CARRITO' : 'AGREGAR AL CARRITO'}
                 </button>
-                <button
-                  className="btn btn-primary mb-3 w-100"
-                >
-                  COMPRAR AHORA
-                </button>
               </div>
 
             </article>

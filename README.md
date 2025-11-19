@@ -63,8 +63,12 @@ Una aplicación web de e-commerce moderna construida con React y Vite, inspirada
 
 ### 🔐 Sistema de Autenticación
 
-- 🔑 **Login** - Inicio de sesión con email y contraseña
+- 🔑 **Login** - Inicio de sesión con nombre de usuario y contraseña
+- 👤 **Nombre de Usuario** - Sistema de autenticación basado en username único
 - 📝 **Registro** - Creación de nuevas cuentas de usuario con validación
+  - Generación automática de username (formato: `nombre.apellido` en minúsculas, sin acentos, ñ→n)
+  - Validación inteligente que no muestra errores cuando el username se genera automáticamente
+  - Placeholder dinámico que muestra el username generado cuando el campo está vacío
 - 🔒 **Recuperación de Contraseña** - Sistema para recuperar acceso a la cuenta
 - 💾 **Recordarme** - Opción para mantener sesión activa (localStorage) o solo para la sesión actual (sessionStorage)
 - 👥 **Roles de Usuario** - Sistema de roles (usuario regular y administrador)
@@ -88,10 +92,13 @@ Una aplicación web de e-commerce moderna construida con React y Vite, inspirada
 - 👥 **Gestión de Usuarios (CRUD Completo)**:
   - Listar todos los usuarios
   - Crear nuevos usuarios con asignación de roles
+  - Generación automática de username (nombre.apellido normalizado)
+  - Validación de username único
   - Activar/Desactivar usuarios
   - Resetear contraseñas
   - Eliminar usuarios
   - Gestión de roles (user/admin)
+  - Formulario responsive con layout de dos columnas desde tablet (768px)
 
 ### 🎨 Experiencia de Usuario
 
@@ -248,17 +255,20 @@ Ejecuta ESLint para verificar la calidad del código.
 
 Para acceder al panel de administración, utiliza las siguientes credenciales:
 
-**Email:** `admin@gmail.com`  
+**Nombre de Usuario:** `Admin`  
 **Contraseña:** `1234`
 
 También puedes usar estas credenciales alternativas:
 
-| Email | Contraseña | Rol |
-|-------|------------|-----|
-| `belen.romero@gmail.com` | `1234` | admin |
-| `talento.tech@gmail.com` | `1234` | admin |
+| Nombre de Usuario | Contraseña | Rol |
+|------------------|------------|-----|
+| `BRomero` | `1234` | admin |
+| `TTech` | `1234` | admin |
 
-**Nota**: Estas credenciales son para desarrollo y demostración. En producción, deberían ser más seguras y gestionadas por un backend.
+**Nota**: 
+- El sistema de autenticación ahora utiliza **nombre de usuario** en lugar de email
+- Los usernames se generan automáticamente con el formato: `nombre.apellido` en minúsculas, sin acentos, y convirtiendo ñ a n (ej: "Juan Pérez" → "juan.perez", "María Muñoz" → "maria.munoz")
+- Estas credenciales son para desarrollo y demostración. En producción, deberían ser más seguras y gestionadas por un backend.
 
 ### Rutas de Error
 
@@ -272,6 +282,8 @@ También puedes usar estas credenciales alternativas:
 - **Persistencia de Estado**: El carrito de compras se guarda automáticamente en localStorage
 - **Notificaciones Interactivas**: Alertas elegantes con SweetAlert2 para feedback al usuario
 - **Validación en Tiempo Real**: Los formularios validan campos mientras el usuario escribe
+- **Generación Automática de Username**: El sistema genera automáticamente el nombre de usuario basado en nombre y apellido (formato normalizado: minúsculas, sin acentos, ñ→n)
+- **Layout Responsive de Formularios**: Formularios de registro con layout de dos columnas desde tablet (768px) para mejor aprovechamiento del espacio
 - **Carrusel Interactivo**: Productos relacionados con auto-play, navegación manual y pausa al hover
 - **Sidebar de Carrito**: Carrito deslizable con overlay que previene scroll del body
 - **Menú Hamburguesa**: Navegación móvil con menú deslizable
@@ -316,7 +328,9 @@ El proyecto incluye un archivo `render.yaml` para facilitar el despliegue en Ren
 
 - Validación de formularios en tiempo real
 - Validación de productos (nombre, precio, descuento, descripción, categoría, imagen)
-- Validación de usuarios (email, contraseña, campos requeridos)
+- Validación de usuarios (username, email, contraseña, campos requeridos)
+- Validación de username único
+- Normalización automática de texto (minúsculas, sin acentos, ñ→n)
 - Validación de imágenes (tipo, tamaño)
 
 ### Manejo de Errores
@@ -345,10 +359,10 @@ El proyecto incluye un archivo `render.yaml` para facilitar el despliegue en Ren
 
 La aplicación está completamente optimizada para:
 
-- **Mobile**: < 426px (1 columna, menú hamburguesa, carrito sidebar)
-- **Tablet**: 426px - 1023px (2 columnas, navegación adaptada)
-- **Desktop**: 1024px - 1199px (4 columnas)
-- **Large Desktop**: ≥ 1200px (5 columnas, máximo aprovechamiento)
+- **Mobile**: < 768px (1 columna, menú hamburguesa, carrito sidebar, formularios en columna)
+- **Tablet**: 768px - 1023px (2 columnas, navegación adaptada, formularios en dos columnas, botones en fila)
+- **Desktop**: 1024px - 1199px (4 columnas, formularios en dos columnas)
+- **Large Desktop**: ≥ 1200px (5 columnas, máximo aprovechamiento, formularios en dos columnas)
 
 ## 🚀 Próximas Mejoras
 

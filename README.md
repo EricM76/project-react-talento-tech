@@ -255,15 +255,15 @@ Ejecuta ESLint para verificar la calidad del código.
 
 Para acceder al panel de administración, utiliza las siguientes credenciales:
 
-**Nombre de Usuario:** `Admin`  
+**Nombre de Usuario:** `admin`  
 **Contraseña:** `1234`
 
 También puedes usar estas credenciales alternativas:
 
 | Nombre de Usuario | Contraseña | Rol |
 |------------------|------------|-----|
-| `BRomero` | `1234` | admin |
-| `TTech` | `1234` | admin |
+| `belen.romero` | `1234` | admin |
+| `talento.tech` | `1234` | admin |
 
 **Nota**: 
 - El sistema de autenticación ahora utiliza **nombre de usuario** en lugar de email

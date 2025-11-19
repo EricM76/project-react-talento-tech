@@ -6,22 +6,18 @@ import { AuthContext } from '../../../context/AuthContext'
 import { login } from '../../../services/auth'
 import Swal from 'sweetalert2'
 
-const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-
 const validateCredentials = (credentials) => {
-  const { email, password } = credentials
+  const { username, password } = credentials
   const errors = {}
 
-  if (!email.trim()) {
-    errors.email = 'Ingresá tu correo electrónico.'
-  } else if (!EMAIL_REGEX.test(email.trim())) {
-    errors.email = 'Ingresá un correo electrónico válido.'
+  if (!username.trim()) {
+    errors.username = 'Ingresá tu nombre de usuario.'
   }
 
   if (!password.trim()) {
     errors.password = 'Ingresá tu contraseña.'
   } else if (password.trim().length < 4) {
-    errors.password = 'La contraseña debe tener al menos 6 caracteres.'
+    errors.password = 'La contraseña debe tener al menos 4 caracteres.'
   }
 
   return errors
@@ -30,7 +26,7 @@ const validateCredentials = (credentials) => {
 export const LoginFormContainer = () => {
   const { auth, setAuth, isInitializing } = useContext(AuthContext)
   const [credentials, setCredentials] = useState({
-    email: '',
+    username: '',
     password: '',
     remember: false
   })
@@ -78,10 +74,10 @@ export const LoginFormContainer = () => {
     setErrors((prev) => {
       const updatedErrors = { ...prev }
 
-      if (validationErrors.email) {
-        updatedErrors.email = validationErrors.email
+      if (validationErrors.username) {
+        updatedErrors.username = validationErrors.username
       } else {
-        delete updatedErrors.email
+        delete updatedErrors.username
       }
 
       if (validationErrors.password) {
@@ -107,7 +103,7 @@ export const LoginFormContainer = () => {
     setLoading(true)
 
     try {
-      const { user } = await login(credentials.email, credentials.password)
+      const { user } = await login(credentials.username, credentials.password)
       
       // Guardar datos de autenticación usando setAuth del contexto
       // setAuth ahora maneja automáticamente localStorage/sessionStorage según remember

@@ -21,19 +21,19 @@ export const LoginFormUI = ({
       <div className="login-form-container">
         <form className="login-form" onSubmit={onSubmit} noValidate>
           <div className="form-group">
-            <label htmlFor="email" className="form-label">Correo electrónico</label>
+            <label htmlFor="username" className="form-label">Nombre de usuario</label>
             <input
-              type="email"
-              id="email"
-              name="email"
-              value={credentials.email}
+              type="text"
+              id="username"
+              name="username"
+              value={credentials.username}
               onChange={onChange}
               onBlur={onBlur}
-              className={`form-input ${errors.email ? 'form-input-error' : ''}`}
-              placeholder="nombre@correo.com"
-              autoComplete="email"
+              className={`form-input ${errors.username ? 'form-input-error' : ''}`}
+              placeholder="Nombre de usuario"
+              autoComplete="username"
             />
-            {errors.email && <p className="form-error">{errors.email}</p>}
+            {errors.username && <p className="form-error">{errors.username}</p>}
           </div>
 
           <div className="form-group">

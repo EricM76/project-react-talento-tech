@@ -1,3 +1,14 @@
+// Función para normalizar texto: minúsculas, sin acentos, ñ -> n
+const normalizeText = (text) => {
+  return text
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '') // Eliminar acentos
+    .replace(/ñ/g, 'n')
+    .replace(/Ñ/g, 'n')
+    .trim()
+}
+
 // Cargar usuarios desde el JSON local
 const loadUsersFromJSON = async () => {
   try {
@@ -54,16 +65,16 @@ const loadUsers = async () => {
 }
 
 /**
- * Autentica un usuario con email y contraseña
- * @param {string} email - Email del usuario
+ * Autentica un usuario con username y contraseña
+ * @param {string} username - Nombre de usuario
  * @param {string} password - Contraseña del usuario
  * @returns {Promise<{user: Object}>} Usuario autenticado (el token será generado por el backend)
  */
-const login = async (email, password) => {
+const login = async (username, password) => {
   try {
     const users = await loadUsers()
     const user = users.find(
-      (u) => u.email.toLowerCase() === email.toLowerCase()
+      (u) => u.username && u.username.toLowerCase() === username.toLowerCase()
     )
 
     // Si el usuario no existe, lanzar error de credenciales
@@ -161,6 +172,7 @@ const updatePassword = async (recoveryToken, newPassword) => {
  * @param {Object} userData - Datos del nuevo usuario
  * @param {string} userData.name - Nombre del usuario
  * @param {string} userData.surname - Apellido del usuario
+ * @param {string} userData.username - Nombre de usuario (opcional, se genera automáticamente si no se proporciona)
  * @param {string} userData.email - Email del usuario
  * @param {string} userData.password - Contraseña del usuario
  * @returns {Promise<{user: Object, message: string}>} Usuario registrado
@@ -175,7 +187,7 @@ const register = async (userData) => {
     }
 
     if (password.length < 4) {
-      throw new Error('La contraseña debe tener al menos 6 caracteres')
+      throw new Error('La contraseña debe tener al menos 4 caracteres')
     }
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
@@ -189,6 +201,20 @@ const register = async (userData) => {
     const emailExists = users.some((u) => u.email.toLowerCase() === email.toLowerCase())
     if (emailExists) {
       throw new Error('El email ya está registrado')
+    }
+
+    // Generar username automáticamente si no se proporciona
+    let username = userData.username?.trim()
+    if (!username) {
+      const normalizedName = normalizeText(name)
+      const normalizedSurname = normalizeText(surname)
+      username = normalizedName + '.' + normalizedSurname
+    }
+
+    // Verificar si el username ya existe
+    const usernameExists = users.some((u) => u.username && u.username.toLowerCase() === username.toLowerCase())
+    if (usernameExists) {
+      throw new Error('El nombre de usuario ya está en uso')
     }
 
     // Obtener usuarios con cambios aplicados para calcular el máximo ID
@@ -205,6 +231,7 @@ const register = async (userData) => {
       id: newId,
       name: name.trim(),
       surname: surname.trim(),
+      username: username,
       email: email.toLowerCase().trim(),
       password: password,
       token: null,

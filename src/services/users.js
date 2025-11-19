@@ -1,3 +1,14 @@
+// Función para normalizar texto: minúsculas, sin acentos, ñ -> n
+const normalizeText = (text) => {
+  return text
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '') // Eliminar acentos
+    .replace(/ñ/g, 'n')
+    .replace(/Ñ/g, 'n')
+    .trim()
+}
+
 // Cargar usuarios desde el JSON local
 const loadUsersFromJSON = async () => {
   try {
@@ -236,6 +247,7 @@ const resetUserPassword = async (id) => {
  * @param {Object} userData - Datos del nuevo usuario
  * @param {string} userData.name - Nombre del usuario
  * @param {string} userData.surname - Apellido del usuario
+ * @param {string} userData.username - Nombre de usuario (opcional, se genera automáticamente si no se proporciona)
  * @param {string} userData.email - Email del usuario
  * @param {string} userData.password - Contraseña del usuario
  * @param {string} userData.role - Rol del usuario (opcional, por defecto 'user')
@@ -259,23 +271,40 @@ const createUser = async (userData) => {
       throw new Error('Email inválido')
     }
 
+    // Cargar usuarios completos (con contraseñas) para validaciones
+    const localUsers = await loadUsersFromJSON()
+    const usersWithChanges = applyStoredChanges(localUsers)
+    const activeUsers = usersWithChanges.filter(user => !user.deleted)
+
     // Verificar si el email ya existe
-    const users = await getUsers()
-    const emailExists = users.some((u) => u.email.toLowerCase() === email.toLowerCase())
+    const emailExists = activeUsers.some((u) => u.email.toLowerCase() === email.toLowerCase())
     if (emailExists) {
       throw new Error('El email ya está registrado')
     }
 
+    // Generar username automáticamente si no se proporciona
+    let username = userData.username?.trim()
+    if (!username) {
+      const normalizedName = normalizeText(name)
+      const normalizedSurname = normalizeText(surname)
+      username = normalizedName + '.' + normalizedSurname
+    }
+
+    // Verificar si el username ya existe
+    const usernameExists = activeUsers.some((u) => u.username && u.username.toLowerCase() === username.toLowerCase())
+    if (usernameExists) {
+      throw new Error('El nombre de usuario ya está en uso')
+    }
+
     // Obtener el máximo ID de los usuarios existentes
-    const localUsers = await loadUsersFromJSON()
-    const usersWithChanges = applyStoredChanges(localUsers)
-    const maxId = usersWithChanges.length > 0 ? Math.max(...usersWithChanges.map((u) => Number(u.id) || 0)) : 0
+    const maxId = activeUsers.length > 0 ? Math.max(...activeUsers.map((u) => Number(u.id) || 0)) : 0
     
     // Crear nuevo usuario
     const newUser = {
       id: maxId + 1,
       name: name.trim(),
       surname: surname.trim(),
+      username: username,
       email: email.toLowerCase().trim(),
       password: password,
       token: null,

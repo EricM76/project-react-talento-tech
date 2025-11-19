@@ -3,6 +3,7 @@
     "id": 1,
     "name": "Admin",
     "surname": "Sistema",
+    "username": "admin",
     "email": "admin@gmail.com",
     "password": "1234",
     "token": null,
@@ -13,6 +14,7 @@
     "id": 2,
     "name": "Belén",
     "surname": "Romero",
+    "username": "beren.romero",
     "email": "belen.romero@gmail.com",
     "password": "1234",
     "token": null,
@@ -23,6 +25,7 @@
     "id": 3,
     "name": "Talento",
     "surname": "Tech",
+    "username": "talento.tech",
     "email": "talento.tech@gmail.com",
     "password": "1234",
     "token": null,
@@ -33,6 +36,7 @@
     "id": 4,
     "name": "Ana",
     "surname": "Martínez",
+    "username": "ana.martinez",
     "email": "inactive@gmail.com",
     "password": "1234",
     "token": null,
@@ -43,20 +47,33 @@
     "id": 5,
     "name": "Luis",
     "surname": "Fernández",
+    "username": "luis.fernandez",
     "email": "luis.fernandez@gmail.com",
     "password": "1234",
     "token": null,
     "role": "user",
-    "active": false
+    "active": true
   },
   {
     "id": 6,
     "name": "Laura",
     "surname": "López",
+    "username": "laura.lopez",
     "email": "laura.lopez@gmail.com",
     "password": "password678",
     "token": null,
     "role": "user",
     "active": false
+  },
+  {
+    "id": 7,
+    "name": "Eric",
+    "surname": "Mena",
+    "username": "eric.mena",
+    "email": "eric@gmail.com",
+    "password": "123123",
+    "token": null,
+    "role": "admin",
+    "active": true
   }
 ]

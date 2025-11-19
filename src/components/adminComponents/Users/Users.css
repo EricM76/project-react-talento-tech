@@ -526,6 +526,25 @@
   flex-direction: column;
 }
 
+.users__form-row {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+/* Layout de dos columnas desde tablet (768px en adelante) */
+@media (min-width: 768px) {
+  .users__form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0 1.5rem;
+  }
+
+  .users__form-row .form-group {
+    margin-bottom: 20px;
+  }
+}
+
 /* Reutilizar estilos del formulario de login */
 .users__modal-form .form-group {
   margin-bottom: 20px;
@@ -647,7 +666,7 @@
 }
 
 /* Responsive para el modal */
-@media (max-width: 768px) {
+@media (max-width: 767px) {
   .users__modal-overlay {
     padding: 1rem;
   }
@@ -674,6 +693,18 @@
 
   .users__modal-button {
     width: 100%;
+  }
+}
+
+/* Botones en fila desde tablet (768px) */
+@media (min-width: 768px) {
+  .users__modal-actions {
+    flex-direction: row;
+    justify-content: flex-end;
+  }
+
+  .users__modal-button {
+    width: auto;
   }
 }
 

@@ -5,8 +5,19 @@ import Swal from 'sweetalert2'
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
+// Función para normalizar texto: minúsculas, sin acentos, ñ -> n
+const normalizeText = (text) => {
+  return text
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '') // Eliminar acentos
+    .replace(/ñ/g, 'n')
+    .replace(/Ñ/g, 'n')
+    .trim()
+}
+
 const validateUserData = (userData) => {
-  const { name, surname, email, password, role } = userData
+  const { name, surname, username, email, password, role } = userData
   const errors = {}
 
   if (!name || !name.trim()) {
@@ -15,6 +26,10 @@ const validateUserData = (userData) => {
 
   if (!surname || !surname.trim()) {
     errors.surname = 'El apellido es requerido'
+  }
+
+  if (!username || !username.trim()) {
+    errors.username = 'El nombre de usuario es requerido'
   }
 
   if (!email || !email.trim()) {
@@ -45,6 +60,7 @@ export const UsersContainer = ({ onOpenModalRef }) => {
   const [userData, setUserData] = useState({
     name: '',
     surname: '',
+    username: '',
     email: '',
     password: '',
     role: 'user'
@@ -70,11 +86,23 @@ export const UsersContainer = ({ onOpenModalRef }) => {
     fetchUsers()
   }, [])
 
+  // Limpiar error de username cuando se genera automáticamente y tiene valor
+  useEffect(() => {
+    if (userData.username && userData.username.trim() && formErrors.username) {
+      setFormErrors((prev) => {
+        const updated = { ...prev }
+        delete updated.username
+        return updated
+      })
+    }
+  }, [userData.username])
+
   const handleOpenModal = useCallback(() => {
     setShowModal(true)
     setUserData({
       name: '',
       surname: '',
+      username: '',
       email: '',
       password: '',
       role: 'user'
@@ -331,6 +359,7 @@ export const UsersContainer = ({ onOpenModalRef }) => {
     setUserData({
       name: '',
       surname: '',
+      username: '',
       email: '',
       password: '',
       role: 'user'
@@ -340,30 +369,90 @@ export const UsersContainer = ({ onOpenModalRef }) => {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target
-    setUserData((prev) => ({
-      ...prev,
-      [name]: value
-    }))
+    setUserData((prev) => {
+      const updated = {
+        ...prev,
+        [name]: value
+      }
+      
+      // Generar username automáticamente cuando se cambia nombre o apellido
+      // Solo si el username está vacío o coincide con el generado anteriormente
+      if (name === 'name' || name === 'surname') {
+        const firstName = name === 'name' ? value : prev.name
+        const lastName = name === 'surname' ? value : prev.surname
+        
+        if (firstName && lastName) {
+          const normalizedFirstName = normalizeText(firstName)
+          const normalizedLastName = normalizeText(lastName)
+          const generatedUsername = normalizedFirstName + '.' + normalizedLastName
+          // Solo actualizar si el username está vacío o es el generado anteriormente
+          const previousGenerated = prev.name && prev.surname 
+            ? normalizeText(prev.name) + '.' + normalizeText(prev.surname) 
+            : ''
+          if (!updated.username || updated.username === previousGenerated) {
+            updated.username = generatedUsername
+          }
+        }
+      }
+      
+      return updated
+    })
 
-    // Limpiar error del campo cuando el usuario empieza a escribir
+    // Limpiar error del campo cuando el usuario empieza a escribir o cuando tiene valor
     if (formErrors[name]) {
-      setFormErrors((prev) => {
-        const updated = { ...prev }
-        delete updated[name]
-        return updated
-      })
+      // Para username, solo limpiar si tiene valor (no validar en tiempo real si está generado)
+      if (name === 'username') {
+        if (value.trim()) {
+          setFormErrors((prev) => {
+            const updated = { ...prev }
+            delete updated.username
+            return updated
+          })
+        }
+      } else {
+        // Para otros campos, limpiar el error normalmente
+        setFormErrors((prev) => {
+          const updated = { ...prev }
+          delete updated[name]
+          return updated
+        })
+      }
     }
   }
 
-  const handleInputBlur = () => {
-    const validationErrors = validateUserData(userData)
-    setFormErrors((prev) => {
-      const updated = { ...prev }
-      Object.keys(validationErrors).forEach((key) => {
-        updated[key] = validationErrors[key]
+  const handleInputBlur = (e) => {
+    const { name } = e.target
+    
+    // Para username, solo validar si está vacío (no validar si tiene valor generado automáticamente)
+    if (name === 'username') {
+      const validationErrors = validateUserData(userData)
+      setFormErrors((prev) => {
+        const updated = { ...prev }
+        // Solo mostrar error de username si está vacío
+        if (validationErrors.username) {
+          updated.username = validationErrors.username
+        } else {
+          // Si tiene valor, eliminar el error si existe
+          delete updated.username
+        }
+        return updated
       })
-      return updated
-    })
+    } else {
+      // Para otros campos, validar normalmente
+      const validationErrors = validateUserData(userData)
+      setFormErrors((prev) => {
+        const updated = { ...prev }
+        Object.keys(validationErrors).forEach((key) => {
+          // No actualizar el error de username si tiene valor
+          if (key === 'username' && userData.username && userData.username.trim()) {
+            delete updated.username
+          } else {
+            updated[key] = validationErrors[key]
+          }
+        })
+        return updated
+      })
+    }
   }
 
   const handleSubmit = async (e) => {
@@ -415,6 +504,18 @@ export const UsersContainer = ({ onOpenModalRef }) => {
     }
   }
 
+  // Calcular el username generado automáticamente para el placeholder
+  const getGeneratedUsername = () => {
+    if (userData.name && userData.surname) {
+      const normalizedName = normalizeText(userData.name)
+      const normalizedSurname = normalizeText(userData.surname)
+      return normalizedName + '.' + normalizedSurname
+    }
+    return ''
+  }
+
+  const generatedUsernamePlaceholder = getGeneratedUsername()
+
   return (
     <UsersUI
       users={users}
@@ -433,6 +534,7 @@ export const UsersContainer = ({ onOpenModalRef }) => {
       onInputChange={handleInputChange}
       onInputBlur={handleInputBlur}
       onSubmit={handleSubmit}
+      usernamePlaceholder={generatedUsernamePlaceholder}
     />
   )
 }
